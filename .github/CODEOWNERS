@@ -1,0 +1,31 @@
+# Global code owners
+* @username
+
+# Documentation
+*.md @username
+/docs/ @username
+
+# Configuration files
+*.yml @username
+*.yaml @username
+*.json @username
+*.toml @username
+
+# GitHub workflows
+/.github/workflows/ @username
+
+# Source code (adjust paths as needed)
+/src/ @username
+/lib/ @username
+/app/ @username
+
+# Tests
+/tests/ @username
+/test/ @username
+*test* @username
+
+# Build and deployment
+/build/ @username
+/deploy/ @username
+Dockerfile @username
+docker-compose.yml @username
