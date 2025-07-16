@@ -1,31 +1,31 @@
 # Global code owners
-* @username
+* @lionel509 @darkshadogt
 
 # Documentation
-*.md @username
-/docs/ @username
+*.md @lionel509 @darkshadogt
+/docs/ @lionel509 @darkshadogt
 
 # Configuration files
-*.yml @username
-*.yaml @username
-*.json @username
-*.toml @username
+*.yml @lionel509 @darkshadogt
+*.yaml @lionel509 @darkshadogt
+*.json @lionel509 @darkshadogt
+*.toml @lionel509 @darkshadogt
 
 # GitHub workflows
-/.github/workflows/ @username
+/.github/workflows/ @lionel509 @darkshadogt
 
 # Source code (adjust paths as needed)
-/src/ @username
-/lib/ @username
-/app/ @username
+/src/ @lionel509 @darkshadogt
+/lib/ @lionel509 @darkshadogt
+/app/ @lionel509 @darkshadogt
 
 # Tests
-/tests/ @username
-/test/ @username
-*test* @username
+/tests/ @lionel509 @darkshadogt
+/test/ @lionel509 @darkshadogt
+*test* @lionel509 @darkshadogt
 
 # Build and deployment
-/build/ @username
-/deploy/ @username
-Dockerfile @username
-docker-compose.yml @username
+/build/ @lionel509 @darkshadogt
+/deploy/ @lionel509 @darkshadogt
+Dockerfile @lionel509 @darkshadogt
+docker-compose.yml @lionel509 @darkshadogt

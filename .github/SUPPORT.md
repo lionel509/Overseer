@@ -30,7 +30,7 @@ For feature requests:
 ### Direct Contact
 
 For urgent issues or private matters:
-- Email: [maintainer@example.com] (replace with actual email)
+- Email: [lionelweng@gmail.com] (mailto:lionelweng@gmail.com) or[functionaljasonchen@gmail.com] (mailto:functionaljasonchen@gmail.com)
 
 ## Response Times
 

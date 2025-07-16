@@ -14,7 +14,7 @@ If you discover a security vulnerability in this project, please report it priva
 ### How to Report
 
 1. **Do not** create a public GitHub issue for security vulnerabilities
-2. Email us at: [security@example.com] (replace with your actual email)
+2. Email us at: [lionelweng@gmail.com] (mailto:lionelweng@gmail.com) or[functionaljasonchen@gmail.com] (mailto:functionaljasonchen@gmail.com)
 3. Include as much information as possible:
    - Description of the vulnerability
    - Steps to reproduce
