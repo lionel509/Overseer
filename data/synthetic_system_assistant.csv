@@ -1,0 +1,69 @@
+user,assistant,category
+How do I check my CPU usage?,"You can check CPU usage using several methods:
+1. Use 'top' command for real-time monitoring
+2. Use 'htop' for a more user-friendly interface
+3. Use 'ps aux' to see process-specific usage
+4. Use 'vmstat' for system statistics",system_monitoring
+"My system is running slow, what should I check?","When your system is slow, check these areas:
+1. CPU usage with 'top' or 'htop'
+2. Memory usage with 'free -h'
+3. Disk space with 'df -h'
+4. Disk I/O with 'iotop'
+5. Network usage with 'nethogs'
+6. Running processes with 'ps aux'",system_monitoring
+How do I find large files on my system?,"To find large files, use these commands:
+1. 'find / -type f -size +100M' - files larger than 100MB
+2. 'du -sh /*' - directory sizes
+3. 'ncdu' - interactive disk usage analyzer
+4. 'find / -type f -exec ls -la {} + | sort -k5 -nr | head -20' - top 20 largest files",file_management
+What's the best way to monitor system performance?,"For comprehensive system monitoring:
+1. Use 'htop' for real-time process monitoring
+2. Use 'iotop' for disk I/O monitoring
+3. Use 'netstat' or 'ss' for network connections
+4. Use 'vmstat' for virtual memory statistics
+5. Set up continuous monitoring with tools like 'sar' or 'dstat'
+6. Consider system monitoring tools like Nagios or Zabbix for advanced monitoring",system_monitoring
+How do I organize my files better?,"Here are effective file organization strategies:
+1. Create a clear folder structure
+2. Use descriptive names for files and folders
+3. Implement a consistent naming convention
+4. Use tags or metadata when available
+5. Regularly clean up unnecessary files
+6. Use tools like 'find' to locate files quickly",file_management
+How can I find duplicate files?,"To find duplicate files:
+1. Use 'fdupes' command: 'fdupes -r /path/to/directory'
+2. Use 'rdfind' for advanced deduplication
+3. Use Python script with hashlib for custom solutions
+4. GUI tools like 'dupeGuru' for visual interface
+5. Use 'find' with MD5 checksums for manual checking",file_management
+How do I clean up disk space?,"To clean up disk space:
+1. Remove temporary files: 'sudo rm -rf /tmp/*'
+2. Clean package cache: 'sudo apt-get clean' (Ubuntu/Debian)
+3. Remove old logs: 'sudo journalctl --vacuum-time=7d'
+4. Find large files: 'find / -type f -size +100M'
+5. Use disk cleanup tools like 'bleachbit'
+6. Remove old kernels and unused packages",system_maintenance
+What should I do if my system won't boot?,"For boot issues, try these steps:
+1. Check hardware connections and power
+2. Boot from recovery mode or live USB
+3. Check disk health with 'fsck'
+4. Review boot logs: 'journalctl -b'
+5. Check GRUB configuration
+6. Restore from backup if available
+7. Consider reinstalling bootloader",troubleshooting
+How do I secure my system better?,"To improve system security:
+1. Keep system updated: 'sudo apt update && sudo apt upgrade'
+2. Use strong passwords and 2FA
+3. Configure firewall: 'ufw enable'
+4. Disable unnecessary services
+5. Use SSH keys instead of passwords
+6. Regular security audits with tools like 'lynis'
+7. Monitor system logs for suspicious activity",security
+How can I automate system backups?,"To automate backups:
+1. Use 'rsync' for file synchronization
+2. Set up cron jobs for scheduled backups
+3. Use tools like 'duplicity' for encrypted backups
+4. Configure cloud storage integration
+5. Test backup restoration regularly
+6. Create backup scripts with error handling
+7. Monitor backup job success/failure",system_maintenance
