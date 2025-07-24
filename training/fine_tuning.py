@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 import torch
 from transformers import (
     AutoTokenizer, 
-    AutoModelForCausalLM, 
-    TrainingArguments, 
-    Trainer
+    AutoModelForCausalLM
 )
+from transformers.training_args import TrainingArguments
+from transformers.trainer import Trainer
 from datasets import Dataset
 from typing import Dict, List
 from training_config import TrainingConfig
@@ -65,12 +65,12 @@ class OverseerTrainer:
             logging_steps=50,
             save_steps=self.config.save_steps,
             eval_steps=self.config.eval_steps,
-            evaluation_strategy="steps",
+            eval_strategy="steps",
             save_strategy="steps",
             load_best_model_at_end=True,
             metric_for_best_model="eval_loss",
             greater_is_better=False,
-            fp16=self.config.mixed_precision,
+            fp16=False,
             dataloader_num_workers=self.config.dataloader_num_workers,
             remove_unused_columns=False,
         )
@@ -79,7 +79,6 @@ class OverseerTrainer:
             args=training_args,
             train_dataset=train_dataset,
             eval_dataset=val_dataset,
-            tokenizer=self.tokenizer,
         )
         trainer.train()
         trainer.save_model()

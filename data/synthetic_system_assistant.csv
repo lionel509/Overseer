@@ -67,3 +67,803 @@ How can I automate system backups?,"To automate backups:
 5. Test backup restoration regularly
 6. Create backup scripts with error handling
 7. Monitor backup job success/failure",system_maintenance
+How do I update my system?,"To update your system:
+1. On Ubuntu/Debian: 'sudo apt update && sudo apt upgrade'
+2. On Fedora: 'sudo dnf upgrade'
+3. On Arch: 'sudo pacman -Syu'
+4. Always review updates before applying them.",system_maintenance
+How do I check my disk space?,'Use the following commands:
+1. 'df -h' for an overview of disk usage
+2. 'du -sh /path/to/dir' for directory size
+3. 'lsblk' to list block devices',system_monitoring
+How do I restart my computer from the command line?,'To restart your computer:
+1. 'sudo reboot' for immediate restart
+2. 'sudo shutdown -r now' for restart
+3. 'sudo systemctl reboot' (on systemd systems)',system_maintenance
+How do I check my system's IP address?,'To check your IP address:
+1. 'ip addr show' or 'ip a'
+2. 'ifconfig' (older systems)
+3. 'hostname -I' for a quick summary',networking
+How do I kill a process?,'To kill a process:
+1. Find the PID with 'ps aux' or 'pgrep <name>'
+2. Use 'kill <PID>' to terminate
+3. Use 'kill -9 <PID>' for force kill (use with caution)
+4. 'pkill <name>' to kill by process name',system_maintenance
+How do I check system logs?,'To check system logs:
+1. 'journalctl' for systemd logs
+2. 'dmesg' for kernel messages
+3. Check /var/log/ for log files
+4. Use 'tail -f /var/log/syslog' for live updates',troubleshooting
+How do I check memory usage?,'To check memory usage:
+1. 'free -h' for a summary
+2. 'top' or 'htop' for real-time monitoring
+3. 'vmstat' for virtual memory stats',system_monitoring
+How do I schedule a task?,'To schedule a task:
+1. Use 'crontab -e' to edit cron jobs
+2. Use 'at' for one-time tasks
+3. Use 'systemd timers' for advanced scheduling',automation
+How do I change file permissions?,'To change file permissions:
+1. Use 'chmod' to set permissions (e.g., chmod 755 file)
+2. Use 'chown' to change ownership (e.g., chown user:group file)
+3. Use 'ls -l' to view permissions',file_management
+How do I check running services?,'To check running services:
+1. 'systemctl status' or 'systemctl list-units --type=service' (systemd)
+2. 'service --status-all' (SysVinit)
+3. 'ps aux' to see all running processes',system_monitoring
+How do I check my system uptime?,"Use the 'uptime' command to see how long your system has been running. You can also use 'w' or 'top' for uptime information.",system_monitoring
+How do I change my hostname?,"To change your hostname:
+1. Edit /etc/hostname and /etc/hosts
+2. Use 'hostnamectl set-hostname <newname>' (systemd systems)
+3. Reboot or restart the hostname service for changes to take effect.",system_maintenance
+How do I add a new user?,"To add a new user:
+1. Use 'sudo adduser <username>' (Debian/Ubuntu)
+2. Use 'sudo useradd <username>' (RedHat/Fedora)
+3. Set a password with 'sudo passwd <username>'",user_management
+How do I delete a user?,"To delete a user:
+1. Use 'sudo deluser <username>' (Debian/Ubuntu)
+2. Use 'sudo userdel <username>' (RedHat/Fedora)
+3. Add '-r' to remove the home directory as well.",user_management
+How do I change my password?,"To change your password, run 'passwd' and follow the prompts. For another user, use 'sudo passwd <username>'.",user_management
+How do I list all users?,"To list all users:
+1. View /etc/passwd file
+2. Use 'cut -d: -f1 /etc/passwd'
+3. Use 'getent passwd' for a complete list",user_management
+How do I list all groups?,"To list all groups:
+1. View /etc/group file
+2. Use 'cut -d: -f1 /etc/group'",user_management
+How do I add a user to a group?,"To add a user to a group:
+1. 'sudo usermod -aG groupname username'
+2. Log out and back in for changes to take effect.",user_management
+How do I check open network ports?,"To check open ports:
+1. 'ss -tuln' or 'netstat -tuln'
+2. 'lsof -i'
+3. 'nmap localhost' for a scan",networking
+How do I test network connectivity?,"To test connectivity:
+1. 'ping <host>'
+2. 'traceroute <host>'
+3. 'curl -I <url>' for HTTP(S) connectivity
+4. 'nc -zv <host> <port>' for port checks",networking
+How do I mount a drive?,"To mount a drive:
+1. Create a mount point: 'sudo mkdir /mnt/mydrive'
+2. Mount: 'sudo mount /dev/sdX1 /mnt/mydrive'
+3. Add to /etc/fstab for auto-mounting",file_management
+How do I unmount a drive?,"To unmount a drive:
+1. 'sudo umount /mnt/mydrive' or 'sudo umount /dev/sdX1'
+2. Ensure no files are in use on the mount point.",file_management
+How do I check hardware info?,"To check hardware info:
+1. 'lscpu' for CPU info
+2. 'lsblk' for block devices
+3. 'lspci' for PCI devices
+4. 'lsusb' for USB devices
+5. 'dmidecode' for detailed system info (sudo)",system_monitoring
+How do I update my kernel?,"To update your kernel:
+1. On Ubuntu/Debian: 'sudo apt update && sudo apt install --install-recommends linux-generic'
+2. On Fedora: 'sudo dnf update kernel'
+3. Reboot after updating.",system_maintenance
+How do I enable/disable a service?,"To enable/disable a service:
+1. 'sudo systemctl enable <service>'
+2. 'sudo systemctl disable <service>'
+3. 'sudo systemctl start/stop/restart <service>'",system_maintenance
+How do I check system temperature?,"To check temperature:
+1. 'sensors' (install lm-sensors)
+2. 'cat /sys/class/thermal/thermal_zone*/temp'
+3. 'hddtemp /dev/sdX' for disk temps",system_monitoring
+How do I set environment variables?,"To set environment variables:
+1. Temporarily: 'export VAR=value'
+2. Permanently: Add to ~/.bashrc, ~/.zshrc, or /etc/environment",system_maintenance
+How do I check cron jobs?,"To check cron jobs:
+1. 'crontab -l' for current user
+2. 'sudo crontab -l -u <user>' for another user
+3. Check /etc/crontab and /etc/cron.* directories",automation
+How do I compress files?,"To compress files:
+1. 'tar -czvf archive.tar.gz /path/to/files' for tar.gz
+2. 'zip -r archive.zip /path/to/files' for zip
+3. 'gzip file' for single file compression",file_management
+How do I extract compressed files?,"To extract files:
+1. 'tar -xzvf archive.tar.gz' for tar.gz
+2. 'unzip archive.zip' for zip
+3. 'gunzip file.gz' for gzip",file_management
+How do I check for failed systemd services?,"To check for failed services:
+1. 'systemctl --failed'
+2. 'journalctl -xe' for error logs",system_monitoring
+How do I check my system's MAC address?,"To check MAC address:
+1. 'ip link show'
+2. 'ifconfig -a'
+3. 'cat /sys/class/net/<interface>/address'",networking
+How do I set up SSH keys?,"To set up SSH keys:
+1. 'ssh-keygen' to generate keys
+2. 'ssh-copy-id user@host' to copy public key
+3. Add public key to ~/.ssh/authorized_keys on remote host",security
+How do I change my default shell?,"To change your shell:
+1. 'chsh -s /bin/zsh' (or /bin/bash, etc.)
+2. Log out and back in for changes to take effect.",system_maintenance
+How do I check disk health?,"To check disk health:
+1. 'smartctl -a /dev/sdX' (install smartmontools)
+2. 'badblocks -sv /dev/sdX' for bad sectors
+3. 'dmesg | grep -i error' for disk errors",system_monitoring
+How do I check system boot time?,"To check boot time:
+1. 'uptime -s'
+2. 'who -b'
+3. 'systemd-analyze' for boot performance",system_monitoring
+How do I check swap usage?,"To check swap usage:
+1. 'swapon --show'
+2. 'free -h'
+3. 'cat /proc/swaps'",system_monitoring
+How do I install software?,"To install software:
+1. 'sudo apt install <package>' (Debian/Ubuntu)
+2. 'sudo dnf install <package>' (Fedora)
+3. 'sudo pacman -S <package>' (Arch)
+4. Use 'snap' or 'flatpak' for universal packages",system_maintenance
+How do I uninstall software?,"To uninstall software:
+1. 'sudo apt remove <package>' (Debian/Ubuntu)
+2. 'sudo dnf remove <package>' (Fedora)
+3. 'sudo pacman -R <package>' (Arch)",system_maintenance
+How do I check running processes?,"To check running processes:
+1. 'ps aux'
+2. 'top' or 'htop'
+3. 'pgrep <name>' to find by name",system_monitoring
+How do I check system locale?,"To check locale:
+1. 'locale'
+2. 'cat /etc/locale.conf'
+3. 'localectl status' (systemd systems)",system_maintenance
+How do I generate SSH keys?,"To generate SSH keys:
+1. 'ssh-keygen -t rsa -b 4096 -C "your_email@example.com"'
+2. Follow prompts to save keys
+3. Add public key to remote server",security
+How do I check kernel version?,"To check kernel version:
+1. 'uname -r'
+2. 'cat /proc/version'
+3. 'hostnamectl' (systemd systems)",system_monitoring
+How do I check system architecture?,"To check architecture:
+1. 'uname -m'
+2. 'arch'
+3. 'lscpu'",system_monitoring
+How do I check available updates?,"To check for updates:
+1. 'sudo apt update' (Debian/Ubuntu)
+2. 'sudo dnf check-update' (Fedora)
+3. 'sudo pacman -Syuw' (Arch)",system_maintenance
+How do I set file ownership?,"To set file ownership:
+1. 'sudo chown user:group file'
+2. Use '-R' for recursive changes",file_management
+How do I check file type?,"To check file type:
+1. 'file filename'
+2. 'ls -l' for file info",file_management
+How do I check system timezone?,"To check timezone:
+1. 'timedatectl'
+2. 'cat /etc/timezone'
+3. 'date' command",system_maintenance
+How do I change system timezone?,"To change timezone:
+1. 'sudo timedatectl set-timezone <Zone/City>'
+2. Reboot or restart services if needed.",system_maintenance
+How do I check system resource limits?,"To check resource limits:
+1. 'ulimit -a'
+2. Check /etc/security/limits.conf",system_monitoring
+How do I set system resource limits?,"To set limits:
+1. Use 'ulimit' for session limits
+2. Edit /etc/security/limits.conf for persistent changes",system_maintenance
+How do I check systemd journal logs?,"To check journal logs:
+1. 'journalctl'
+2. 'journalctl -u <service>' for specific service
+3. 'journalctl -b' for current boot",troubleshooting
+How do I check last login?,"To check last login:
+1. 'last'
+2. 'lastlog'
+3. 'who' command",user_management
+How do I lock/unlock a user account?,"To lock/unlock:
+1. 'sudo usermod -L <username>' to lock
+2. 'sudo usermod -U <username>' to unlock",user_management
+How do I check system UUID?,"To check UUID:
+1. 'blkid'
+2. 'lsblk -o NAME,UUID'
+3. 'cat /etc/machine-id' for system UUID",system_monitoring
+How do I check system load average?,"To check load average:
+1. 'uptime'
+2. 'cat /proc/loadavg'
+3. 'top' or 'htop'",system_monitoring
+How do I check system processes by user?,"To check processes by user:
+1. 'ps -u <username>'
+2. 'pgrep -u <username>'",system_monitoring
+How do I check system's open files?,"To check open files:
+1. 'lsof'
+2. 'lsof -u <username>' for user-specific
+3. 'lsof -p <PID>' for process-specific",system_monitoring
+How do I check system's listening ports?,"To check listening ports:
+1. 'ss -ltn'
+2. 'netstat -ltn'
+3. 'lsof -i -P -n | grep LISTEN'",networking
+How do I check system's DNS settings?,"To check DNS:
+1. 'cat /etc/resolv.conf'
+2. 'systemd-resolve --status'
+3. 'nmcli dev show | grep DNS'",networking
+How do I flush DNS cache?,"To flush DNS cache:
+1. 'sudo systemd-resolve --flush-caches' (systemd)
+2. 'sudo /etc/init.d/nscd restart' (nscd)
+3. 'sudo service dns-clean restart' (Ubuntu)",networking
+How do I check system's firewall status?,"To check firewall:
+1. 'sudo ufw status' (UFW)
+2. 'sudo firewall-cmd --state' (firewalld)
+3. 'sudo iptables -L'",security
+How do I enable/disable firewall?,"To enable/disable firewall:
+1. 'sudo ufw enable/disable'
+2. 'sudo systemctl start/stop firewalld'",security
+How do I check system's scheduled tasks?,"To check scheduled tasks:
+1. 'crontab -l'
+2. 'ls /etc/cron.*'
+3. 'systemctl list-timers' (systemd)",automation
+How do I check system's running daemons?,"To check daemons:
+1. 'ps aux | grep daemon'
+2. 'systemctl list-units --type=service'
+3. 'service --status-all'",system_monitoring
+How do I check system's battery status?,"To check battery:
+1. 'upower -i /org/freedesktop/UPower/devices/battery_BAT0'
+2. 'acpi' (install if needed)
+3. 'cat /sys/class/power_supply/BAT0/capacity'",system_monitoring
+How do I check system's GPU info?,"To check GPU info:
+1. 'lspci | grep VGA'
+2. 'glxinfo | grep OpenGL' (install mesa-utils)
+3. 'nvidia-smi' (NVIDIA GPUs)",system_monitoring
+How do I check system's RAM type and speed?,"To check RAM type/speed:
+1. 'sudo dmidecode --type 17'
+2. 'lshw -short -C memory'",system_monitoring
+How do I check system's PCI devices?,"To check PCI devices:
+1. 'lspci'
+2. 'lspci -v' for verbose info",system_monitoring
+How do I check system's USB devices?,"To check USB devices:
+1. 'lsusb'
+2. 'lsusb -v' for verbose info",system_monitoring
+How do I check system's S.M.A.R.T. status?,"To check S.M.A.R.T.:
+1. 'sudo smartctl -a /dev/sdX' (install smartmontools)",system_monitoring
+How do I check system's RAID status?,"To check RAID:
+1. 'cat /proc/mdstat'
+2. 'mdadm --detail /dev/md0' (if using mdadm)",system_monitoring
+How do I check system's SELinux status?,"To check SELinux:
+1. 'sestatus'
+2. 'getenforce'",security
+How do I check system's AppArmor status?,"To check AppArmor:
+1. 'sudo aa-status'
+2. 'sudo apparmor_status'",security
+How do I check system's IPv6 address?,"To check IPv6:
+1. 'ip -6 addr show'
+2. 'ifconfig' (look for inet6)" ,networking
+How do I disable IPv6?,"To disable IPv6:
+1. Add 'net.ipv6.conf.all.disable_ipv6 = 1' to /etc/sysctl.conf
+2. Run 'sudo sysctl -p'",networking
+How do I check system's hostname?,"To check hostname:
+1. 'hostname'
+2. 'hostnamectl' (systemd systems)",system_maintenance
+How do I check system's default gateway?,"To check default gateway:
+1. 'ip route'
+2. 'route -n'
+3. 'netstat -rn'",networking
+How do I check system's routing table?,"To check routing table:
+1. 'route -n'
+2. 'ip route show'",networking
+How do I check system's ARP table?,"To check ARP table:
+1. 'arp -a'
+2. 'ip neigh show'",networking
+How do I check system's NTP status?,"To check NTP:
+1. 'timedatectl status'
+2. 'ntpq -p' (if using ntpd)
+3. 'chronyc tracking' (if using chrony)",system_maintenance
+How do I sync system time?,"To sync time:
+1. 'sudo timedatectl set-ntp true'
+2. 'sudo ntpdate <server>' (if ntpdate installed)",system_maintenance
+How do I check system's open connections?,"To check open connections:
+1. 'ss -s'
+2. 'netstat -an'
+3. 'lsof -i'
+4. 'ss -tp' for TCP connections",networking
+How do I check system's listening sockets?,"To check listening sockets:
+1. 'ss -l'
+2. 'netstat -l'
+3. 'lsof -i | grep LISTEN'",networking
+How do I check system's shared memory?,"To check shared memory:
+1. 'ipcs -m'
+2. 'df -h /dev/shm'",system_monitoring
+How do I clear system's shared memory?,"To clear shared memory:
+1. 'ipcrm -m <shmid>'
+2. 'rm -rf /dev/shm/*' (use with caution)",system_maintenance
+How do I check system's zombie processes?,"To check zombie processes:
+1. 'ps aux | grep Z'
+2. 'top' (look for Z in STAT column)",system_monitoring
+How do I kill zombie processes?,"To kill zombies:
+1. Usually, killing the parent process will remove zombies
+2. Use 'ps -ef | grep defunct' to find parent PID
+3. 'kill <parent_PID>'",system_maintenance
+How do I check system's orphan processes?,"To check orphan processes:
+1. 'ps -eo ppid,pid,cmd | awk '$1==1 {print}'',system_monitoring
+How do I check system's runlevel?,"To check runlevel:
+1. 'runlevel'
+2. 'who -r'",system_maintenance
+How do I change system's runlevel?,"To change runlevel:
+1. 'init <runlevel>' (SysVinit)
+2. 'systemctl isolate <target>' (systemd)",system_maintenance
+How do I check system's bootloader?,"To check bootloader:
+1. 'cat /boot/grub/grub.cfg'
+2. 'lsblk -f' to see boot partition
+3. 'efibootmgr' for EFI systems",system_maintenance
+How do I update system's bootloader?,"To update bootloader:
+1. 'sudo update-grub' (Debian/Ubuntu)
+2. 'sudo grub2-mkconfig -o /boot/grub2/grub.cfg' (Fedora)",system_maintenance
+How do I check system's kernel modules?,"To check kernel modules:
+1. 'lsmod'
+2. 'modinfo <module>'
+3. 'ls /lib/modules/$(uname -r)/kernel/'",system_monitoring
+How do I load/unload kernel modules?,"To load/unload modules:
+1. 'sudo modprobe <module>' to load
+2. 'sudo modprobe -r <module>' to unload",system_maintenance
+How do I check system's sysctl settings?,"To check sysctl:
+1. 'sysctl -a'
+2. 'cat /etc/sysctl.conf'",system_maintenance
+How do I change system's sysctl settings?,"To change sysctl:
+1. Edit /etc/sysctl.conf
+2. Run 'sudo sysctl -p' to apply changes",system_maintenance
+How do I check system's cgroups?,"To check cgroups:
+1. 'lscgroup'
+2. 'cat /proc/cgroups'",system_monitoring
+How do I check system's containers?,"To check containers:
+1. 'docker ps' for Docker
+2. 'lxc-ls' for LXC
+3. 'podman ps' for Podman",system_monitoring
+How do I check system's virtualization?,"To check virtualization:
+1. 'systemd-detect-virt'
+2. 'lscpu' (look for Hypervisor vendor)",system_monitoring
+How do I check system's SELinux mode?,"To check SELinux mode:
+1. 'getenforce'
+2. 'sestatus'",security
+How do I change SELinux mode?,"To change SELinux mode:
+1. 'sudo setenforce 0' (permissive)
+2. 'sudo setenforce 1' (enforcing)
+3. Edit /etc/selinux/config for permanent change",security
+How do I check system's AppArmor profiles?,"To check AppArmor profiles:
+1. 'sudo aa-status'
+2. 'sudo apparmor_status'",security
+How do I enable/disable AppArmor?,"To enable/disable AppArmor:
+1. 'sudo systemctl start/stop apparmor'
+2. 'sudo systemctl enable/disable apparmor'",security
+How do I check system's audit logs?,"To check audit logs:
+1. 'ausearch'
+2. 'aureport'
+3. 'cat /var/log/audit/audit.log'",security
+How do I check system's PAM configuration?,"To check PAM config:
+1. View /etc/pam.d/
+2. 'cat /etc/pam.conf'",security
+How do I check system's login history?,"To check login history:
+1. 'last'
+2. 'lastb' for failed logins
+3. 'faillog'",user_management
+How do I check system's sudoers?,"To check sudoers:
+1. 'cat /etc/sudoers'
+2. 'sudo visudo' to edit safely",security
+How do I add a user to sudoers?,"To add to sudoers:
+1. 'sudo usermod -aG sudo <username>' (Debian/Ubuntu)
+2. 'sudo usermod -aG wheel <username>' (RedHat/Fedora)
+3. Edit /etc/sudoers with 'sudo visudo'",security
+How do I check system's group membership?,"To check group membership:
+1. 'groups <username>'
+2. 'id <username>'",user_management
+How do I check system's shadow passwords?,"To check shadow passwords:
+1. 'sudo cat /etc/shadow' (requires root)",security
+How do I check system's password policy?,"To check password policy:
+1. View /etc/login.defs
+2. View /etc/security/pwquality.conf",security
+How do I check system's SSH config?,"To check SSH config:
+1. 'cat /etc/ssh/sshd_config'
+2. 'sshd -T' for effective config",security
+How do I restart SSH service?,"To restart SSH:
+1. 'sudo systemctl restart sshd' (systemd)
+2. 'sudo service ssh restart' (SysVinit)",security
+How do I check system's NFS mounts?,"To check NFS mounts:
+1. 'mount -t nfs'
+2. 'cat /proc/mounts'",file_management
+How do I check system's Samba shares?,"To check Samba shares:
+1. 'smbclient -L localhost -U%'
+2. 'testparm -s'",file_management
+How do I check system's FTP server?,"To check FTP server:
+1. 'systemctl status vsftpd' (if using vsftpd)
+2. 'netstat -tuln | grep 21'",networking
+How do I check system's mail server?,"To check mail server:
+1. 'systemctl status postfix' (if using postfix)
+2. 'netstat -tuln | grep 25'",networking
+How do I check system's print queue?,"To check print queue:
+1. 'lpq'
+2. 'lpstat -o'",file_management
+How do I check system's scheduled shutdowns?,"To check scheduled shutdowns:
+1. 'atq' for at jobs
+2. 'systemctl list-timers' (systemd)",automation
+How do I cancel a scheduled shutdown?,"To cancel shutdown:
+1. 'shutdown -c' (if scheduled with shutdown)
+2. 'atrm <jobid>' (if scheduled with at)",automation
+How do I check system's cron logs?,"To check cron logs:
+1. 'grep CRON /var/log/syslog' (Debian/Ubuntu)
+2. 'cat /var/log/cron' (RedHat/Fedora)",automation
+How do I check system's systemd timers?,"To check timers:
+1. 'systemctl list-timers'
+2. 'systemctl status <timer>'",automation
+How do I create a systemd timer?,"To create a timer:
+1. Create a .service file
+2. Create a .timer file
+3. Enable and start the timer with systemctl",automation
+How do I check system's hardware clock?,"To check hardware clock:
+1. 'hwclock --show'
+2. 'timedatectl'",system_monitoring
+How do I sync hardware clock?,"To sync hardware clock:
+1. 'sudo hwclock --systohc' to sync from system time
+2. 'sudo hwclock --hctosys' to sync from hardware clock",system_maintenance
+How do I check system's ACPI info?,"To check ACPI info:
+1. 'acpi -V' (install if needed)
+2. 'cat /proc/acpi/'",system_monitoring
+How do I check system's power management?,"To check power management:
+1. 'powertop'
+2. 'tlp-stat' (if using TLP)",system_monitoring
+How do I check system's Bluetooth status?,"To check Bluetooth:
+1. 'systemctl status bluetooth'
+2. 'bluetoothctl show'",system_monitoring
+How do I check system's Wi-Fi status?,"To check Wi-Fi:
+1. 'iwconfig'
+2. 'nmcli dev status'
+3. 'iw dev'",networking
+How do I connect to Wi-Fi from command line?,"To connect to Wi-Fi:
+1. 'nmcli dev wifi connect <SSID> password <password>'
+2. 'iwconfig <interface> essid <SSID> key <key>'",networking
+How do I check system's sound devices?,"To check sound devices:
+1. 'aplay -l'
+2. 'lspci | grep Audio'
+3. 'pavucontrol' (if installed)",system_monitoring
+How do I check system's microphone?,"To check microphone:
+1. 'arecord -l'
+2. 'pavucontrol' (if installed)",system_monitoring
+How do I check system's webcam?,"To check webcam:
+1. 'ls /dev/video*'
+2. 'v4l2-ctl --list-devices' (install v4l-utils)",system_monitoring
+How do I test system's webcam?,"To test webcam:
+1. 'cheese' (install if needed)
+2. 'ffplay /dev/video0' (install ffmpeg)",system_monitoring
+How do I check system's display resolution?,"To check resolution:
+1. 'xrandr'
+2. 'xdpyinfo'",system_monitoring
+How do I change system's display resolution?,"To change resolution:
+1. 'xrandr --output <output> --mode <resolution>'",system_maintenance
+How do I check system's X11 status?,"To check X11:
+1. 'ps aux | grep X'
+2. 'echo $DISPLAY'",system_monitoring
+How do I restart X11?,"To restart X11:
+1. 'sudo systemctl restart display-manager' (systemd)
+2. 'sudo service lightdm restart' (if using lightdm)",system_maintenance
+How do I check system's Wayland status?,"To check Wayland:
+1. 'echo $XDG_SESSION_TYPE' (should show 'wayland' or 'x11')",system_monitoring
+How do I check system's graphical session?,"To check session:
+1. 'loginctl show-session $(loginctl | grep $(whoami) | awk '{print $1}') -p Type'",system_monitoring
+How do I check system's package sources?,"To check sources:
+1. 'cat /etc/apt/sources.list' (Debian/Ubuntu)
+2. 'cat /etc/yum.repos.d/*.repo' (Fedora/RedHat)",system_maintenance
+How do I add a package source?,"To add source:
+1. Edit /etc/apt/sources.list or add a .list file to /etc/apt/sources.list.d/ (Debian/Ubuntu)
+2. Use 'add-apt-repository' (Debian/Ubuntu)",system_maintenance
+How do I check system's snap packages?,"To check snaps:
+1. 'snap list'",system_maintenance
+How do I check system's flatpak packages?,"To check flatpaks:
+1. 'flatpak list'",system_maintenance
+How do I check system's AppImage packages?,"To check AppImages:
+1. AppImages are portable, check your download directory or use 'find ~ -name "*.AppImage"'",system_maintenance
+How do I check system's Python packages?,"To check Python packages:
+1. 'pip list'
+2. 'pip3 list'",system_maintenance
+How do I check system's Node.js packages?,"To check Node.js packages:
+1. 'npm list -g --depth=0' for global
+2. 'npm list --depth=0' for local",system_maintenance
+How do I check system's Ruby gems?,"To check gems:
+1. 'gem list'",system_maintenance
+How do I check system's Perl modules?,"To check Perl modules:
+1. 'perldoc perllocal'
+2. 'instmodsh'",system_maintenance
+How do I check system's Go packages?,"To check Go packages:
+1. 'go list ...'",system_maintenance
+How do I check system's Java packages?,"To check Java packages:
+1. 'dpkg -l | grep java' (Debian/Ubuntu)
+2. 'rpm -qa | grep java' (Fedora/RedHat)",system_maintenance
+How do I check system's running Docker containers?,"To check Docker containers:
+1. 'docker ps'
+2. 'docker ps -a' for all containers",system_monitoring
+How do I stop a Docker container?,"To stop a container:
+1. 'docker stop <container_id>'",system_maintenance
+How do I remove a Docker container?,"To remove a container:
+1. 'docker rm <container_id>'",system_maintenance
+How do I remove a Docker image?,"To remove an image:
+1. 'docker rmi <image_id>'",system_maintenance
+How do I check Docker images?,"To check images:
+1. 'docker images'",system_monitoring
+How do I check Docker volumes?,"To check volumes:
+1. 'docker volume ls'",system_monitoring
+How do I prune Docker system?,"To prune Docker:
+1. 'docker system prune' (removes unused data)",system_maintenance
+How do I check system's Kubernetes pods?,"To check pods:
+1. 'kubectl get pods'",system_monitoring
+How do I check system's Kubernetes nodes?,"To check nodes:
+1. 'kubectl get nodes'",system_monitoring
+How do I check system's Kubernetes services?,"To check services:
+1. 'kubectl get services'",system_monitoring
+How do I check system's Kubernetes deployments?,"To check deployments:
+1. 'kubectl get deployments'",system_monitoring
+How do I check system's Kubernetes config?,"To check config:
+1. 'kubectl config view'",system_monitoring
+How do I check system's Kubernetes logs?,"To check logs:
+1. 'kubectl logs <pod>'",system_monitoring
+How do I check system's Kubernetes events?,"To check events:
+1. 'kubectl get events'",system_monitoring
+How do I check system's Kubernetes namespaces?,"To check namespaces:
+1. 'kubectl get namespaces'",system_monitoring
+How do I check system's Kubernetes contexts?,"To check contexts:
+1. 'kubectl config get-contexts'",system_monitoring
+How do I switch Kubernetes context?,"To switch context:
+1. 'kubectl config use-context <context>'",system_maintenance
+How do I check system's Kubernetes version?,"To check version:
+1. 'kubectl version --short'",system_monitoring
+How do I check system's Helm releases?,"To check Helm releases:
+1. 'helm list'",system_monitoring
+How do I check system's Helm charts?,"To check Helm charts:
+1. 'helm search repo <chart>'",system_monitoring
+How do I install a Helm chart?,"To install chart:
+1. 'helm install <release> <chart>'",system_maintenance
+How do I upgrade a Helm release?,"To upgrade release:
+1. 'helm upgrade <release> <chart>'",system_maintenance
+How do I uninstall a Helm release?,"To uninstall release:
+1. 'helm uninstall <release>'",system_maintenance
+How do I check system's IPv4 address?,"To check IPv4 address:
+1. 'ip -4 addr show'
+2. 'hostname -I'
+3. 'ifconfig' (look for inet)",networking
+How do I check system's DNS resolution?,"To test DNS resolution:
+1. 'dig example.com'
+2. 'nslookup example.com'
+3. 'host example.com'",networking
+How do I test internet speed from command line?,"To test speed:
+1. 'speedtest-cli' (install if needed)
+2. 'fast' (from fast-cli)",networking
+How do I check for broken symbolic links?,"To find broken symlinks:
+1. 'find /path -xtype l'",file_management
+How do I find recently modified files?,"To find recent files:
+1. 'find /path -type f -mtime -1' (last 24 hours)
+2. 'ls -lt' for sorted list",file_management
+How do I find files by extension?,"To find by extension:
+1. 'find /path -name "*.ext"'
+2. 'ls *.ext'",file_management
+How do I search for text in files?,"To search text:
+1. 'grep -rnw "/path" -e "pattern"'
+2. 'ack "pattern"'
+3. 'ag "pattern"' (the silver searcher)",file_management
+How do I check file integrity with checksums?,"To check integrity:
+1. 'md5sum file'
+2. 'sha256sum file'
+3. 'diff <(sha256sum file1) <(sha256sum file2)'",file_management
+How do I create a symbolic link?,"To create symlink:
+1. 'ln -s /path/to/target /path/to/link'",file_management
+How do I create a hard link?,"To create hard link:
+1. 'ln /path/to/target /path/to/link'",file_management
+How do I check disk usage by directory?,"To check usage:
+1. 'du -sh /path/*'
+2. 'ncdu /path' (install if needed)",file_management
+How do I securely delete a file?,"To securely delete:
+1. 'shred -u file'
+2. 'srm file' (install secure-delete)
+3. 'wipe file' (install wipe)",security
+How do I encrypt a file?,"To encrypt file:
+1. 'gpg -c file'
+2. 'openssl enc -aes-256-cbc -in file -out file.enc'",security
+How do I decrypt a file?,"To decrypt file:
+1. 'gpg file.gpg'
+2. 'openssl enc -d -aes-256-cbc -in file.enc -out file'",security
+How do I create a tar archive?,"To create tar:
+1. 'tar -cvf archive.tar /path/to/files'",file_management
+How do I extract a tar archive?,"To extract tar:
+1. 'tar -xvf archive.tar'",file_management
+How do I split a large file?,"To split file:
+1. 'split -b 1G largefile part_'
+2. 'zip -s 1g largefile.zip largefile' (for zip)",file_management
+How do I merge split files?,"To merge files:
+1. 'cat part_* > largefile'
+2. 'zip -s 0 --out merged.zip largefile.zip' (for zip)",file_management
+How do I schedule a shutdown?,"To schedule shutdown:
+1. 'sudo shutdown +10' (in 10 minutes)
+2. 'sudo shutdown 22:00' (at 10pm)",automation
+How do I schedule a reboot?,"To schedule reboot:
+1. 'sudo shutdown -r +10'
+2. 'sudo shutdown -r 22:00'",automation
+How do I check system's power state?,"To check power state:
+1. 'cat /sys/class/power_supply/AC/online'
+2. 'upower -d'",system_monitoring
+How do I check system's fan speed?,"To check fan speed:
+1. 'sensors' (install lm-sensors)
+2. 'ipmitool sdr' (for servers)",system_monitoring
+How do I benchmark disk performance?,"To benchmark disk:
+1. 'hdparm -Tt /dev/sdX'
+2. 'fio --name=benchmark --size=1G --filename=testfile --bs=4k --rw=randrw --ioengine=libaio --iodepth=64 --direct=1 --numjobs=4 --runtime=60 --group_reporting'
+3. 'dd if=/dev/zero of=testfile bs=1G count=1 oflag=dsync' (not always accurate)",system_monitoring
+How do I benchmark CPU performance?,"To benchmark CPU:
+1. 'sysbench cpu run'
+2. 'stress-ng --cpu 4 --timeout 60s' (install if needed)",system_monitoring
+How do I benchmark network speed?,"To benchmark network:
+1. 'iperf3 -s' on server, 'iperf3 -c <server>' on client
+2. 'speedtest-cli' for internet speed",networking
+How do I check for memory leaks?,"To check for leaks:
+1. 'valgrind --leak-check=full ./program' (for C/C++)
+2. Monitor with 'top' or 'htop' for growing memory usage",system_monitoring
+How do I check for high CPU usage processes?,"To find high CPU:
+1. 'top' or 'htop' (sort by CPU)
+2. 'ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head'",system_monitoring
+How do I check for high memory usage processes?,"To find high memory:
+1. 'top' or 'htop' (sort by MEM)
+2. 'ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head'",system_monitoring
+How do I check for open files by a process?,"To check open files:
+1. 'lsof -p <PID>'",system_monitoring
+How do I check for open network connections by a process?,"To check connections:
+1. 'lsof -i -a -p <PID>'
+2. 'netstat -anp | grep <PID>'",networking
+How do I check for failed logins?,"To check failed logins:
+1. 'lastb'
+2. 'faillog'
+3. 'grep "Failed password" /var/log/auth.log'",security
+How do I check for successful logins?,"To check successful logins:
+1. 'last'
+2. 'grep "Accepted password" /var/log/auth.log'",security
+How do I check for sudo usage?,"To check sudo usage:
+1. 'grep sudo /var/log/auth.log'
+2. 'ausearch -c sudo' (if auditd enabled)",security
+How do I check for root logins?,"To check root logins:
+1. 'last -u root'
+2. 'grep "session opened for user root" /var/log/auth.log'",security
+How do I check for SSH logins?,"To check SSH logins:
+1. 'last -i | grep ssh'
+2. 'grep sshd /var/log/auth.log'",security
+How do I check for SSH brute force attempts?,"To check brute force:
+1. 'grep "Failed password" /var/log/auth.log | wc -l'
+2. 'fail2ban-client status sshd' (if fail2ban installed)",security
+How do I block an IP address?,"To block IP:
+1. 'sudo ufw deny from <ip>'
+2. 'sudo iptables -A INPUT -s <ip> -j DROP'",security
+How do I allow an IP address?,"To allow IP:
+1. 'sudo ufw allow from <ip>'
+2. 'sudo iptables -A INPUT -s <ip> -j ACCEPT'",security
+How do I open a port in the firewall?,"To open port:
+1. 'sudo ufw allow 8080/tcp'
+2. 'sudo firewall-cmd --add-port=8080/tcp --permanent; sudo firewall-cmd --reload'",security
+How do I close a port in the firewall?,"To close port:
+1. 'sudo ufw deny 8080/tcp'
+2. 'sudo firewall-cmd --remove-port=8080/tcp --permanent; sudo firewall-cmd --reload'",security
+How do I check for listening UDP ports?,"To check UDP:
+1. 'ss -lun'
+2. 'netstat -lun'
+3. 'lsof -iUDP -P -n | grep LISTEN'",networking
+How do I check for listening TCP ports?,"To check TCP:
+1. 'ss -ltn'
+2. 'netstat -ltn'
+3. 'lsof -iTCP -P -n | grep LISTEN'",networking
+How do I check for duplicate IP addresses?,"To check duplicates:
+1. 'arping <ip>'
+2. 'arp -a' (look for duplicate MACs)",networking
+How do I check for packet loss?,"To check packet loss:
+1. 'ping -c 100 <host>' (look for packet loss in summary)
+2. 'mtr <host>' (install if needed)",networking
+How do I check for high disk IO?,"To check disk IO:
+1. 'iotop' (install if needed)
+2. 'dstat -d'
+3. 'iostat -dx 1' (install sysstat)",system_monitoring
+How do I check for high network IO?,"To check network IO:
+1. 'iftop' (install if needed)
+2. 'nload'
+3. 'bmon'",networking
+How do I check for zombie TCP connections?,"To check zombie TCP:
+1. 'netstat -ant | grep TIME_WAIT'
+2. 'ss -ant | grep TIME-WAIT'",networking
+How do I check for SYN flood attacks?,"To check SYN flood:
+1. 'netstat -ant | grep SYN_RECV'
+2. 'ss -ant | grep SYN-RECV'",security
+How do I check for ARP spoofing?,"To check ARP spoofing:
+1. 'arp -a' (look for duplicate IPs with different MACs)
+2. Use 'arpwatch' for monitoring",security
+How do I check for DNS spoofing?,"To check DNS spoofing:
+1. 'dig example.com'
+2. Compare results with trusted DNS
+3. Use 'dnstracer' (install if needed)",security
+How do I check for SSL certificate expiration?,"To check SSL expiration:
+1. 'openssl s_client -connect example.com:443 -servername example.com | openssl x509 -noout -dates'",security
+How do I renew Let's Encrypt certificates?,"To renew certs:
+1. 'sudo certbot renew'
+2. 'sudo systemctl reload nginx' (or apache2)",security
+How do I check for failed backups?,"To check backups:
+1. Review backup logs
+2. Check backup destination for recent files
+3. Use 'restic snapshots' or 'borg list' if using those tools",system_maintenance
+How do I restore from backup?,"To restore backup:
+1. Use your backup tool's restore command (e.g., 'rsync', 'restic restore', 'borg extract')
+2. Verify restored files",system_maintenance
+How do I automate cloud backups?,"To automate cloud backups:
+1. Use 'rclone' for cloud storage
+2. Schedule with cron
+3. Use provider's CLI tools (e.g., aws s3 sync)",system_maintenance
+How do I check AWS EC2 instance status?,"To check EC2 status:
+1. 'aws ec2 describe-instances' (AWS CLI)
+2. Check AWS Console",cloud
+How do I check AWS S3 bucket usage?,"To check S3 usage:
+1. 'aws s3 ls s3://bucket --recursive --human-readable --summarize'
+2. Check AWS Console",cloud
+How do I check GCP VM status?,"To check GCP VM:
+1. 'gcloud compute instances list'
+2. Check GCP Console",cloud
+How do I check Azure VM status?,"To check Azure VM:
+1. 'az vm list -d -o table'
+2. Check Azure Portal",cloud
+How do I check Kubernetes pod logs?,"To check pod logs:
+1. 'kubectl logs <pod>'
+2. 'stern <pod>' (install stern)",cloud
+How do I check Docker container logs?,"To check container logs:
+1. 'docker logs <container_id>'",cloud
+How do I check for failed systemd units?,"To check failed units:
+1. 'systemctl --failed'
+2. 'journalctl -xe' for details",system_monitoring
+How do I check for OOM (Out of Memory) events?,"To check OOM:
+1. 'dmesg | grep -i oom'
+2. 'journalctl -k | grep -i oom'
+3. Check /var/log/messages",system_monitoring
+How do I check for kernel panics?,"To check panics:
+1. 'dmesg | grep -i panic'
+2. Check /var/log/kern.log
+3. 'journalctl -k'",system_monitoring
+How do I check for hardware errors?,"To check hardware errors:
+1. 'dmesg | grep -i error'
+2. 'journalctl -k | grep -i error'
+3. Check /var/log/syslog",system_monitoring
+How do I check for filesystem errors?,"To check filesystem errors:
+1. 'dmesg | grep -i ext4'
+2. 'fsck /dev/sdX' (unmounted)
+3. Check /var/log/fsck.log",system_monitoring
+How do I check for disk SMART errors?,"To check SMART errors:
+1. 'sudo smartctl -a /dev/sdX' (install smartmontools)
+2. 'dmesg | grep -i smart'",system_monitoring
+How do I check for RAID degradation?,"To check RAID:
+1. 'cat /proc/mdstat'
+2. 'mdadm --detail /dev/md0' (if using mdadm)",system_monitoring
+How do I check for LVM status?,"To check LVM:
+1. 'lvs', 'vgs', 'pvs'
+2. 'lvdisplay', 'vgdisplay', 'pvdisplay'",system_monitoring
+How do I resize a logical volume?,"To resize LV:
+1. 'lvresize -L +10G /dev/vgname/lvname'
+2. 'resize2fs /dev/vgname/lvname' (for ext4) after resizing",system_maintenance
+How do I create a new logical volume?,"To create LV:
+1. 'lvcreate -L 10G -n lvname vgname'",system_maintenance
+How do I extend a volume group?,"To extend VG:
+1. 'vgextend vgname /dev/sdX'",system_maintenance
+How do I reduce a logical volume?,"To reduce LV:
+1. 'umount /mountpoint'
+2. 'lvreduce -L -10G /dev/vgname/lvname'
+3. 'resize2fs /dev/vgname/lvname' (for ext4) after reducing",system_maintenance
+How do I create a new volume group?,"To create VG:
+1. 'vgcreate vgname /dev/sdX'",system_maintenance
+How do I create a new physical volume?,"To create PV:
+1. 'pvcreate /dev/sdX'",system_maintenance
+How do I check for open NFS mounts?,"To check NFS mounts:
+1. 'mount -t nfs'
+2. 'cat /proc/mounts' | grep nfs",file_management
+How do I check for open Samba shares?,"To check Samba:
+1. 'smbstatus'
+2. 'smbclient -L localhost -U%'
