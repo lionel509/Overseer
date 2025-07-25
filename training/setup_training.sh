@@ -1,7 +1,25 @@
 #!/bin/bash
 
-# Install required packages
-pip install torch transformers datasets kaggle accelerate pandas python-dotenv
+# Activate conda environment
+if command -v conda &> /dev/null; then
+    if conda info --envs | grep -q '^overseer[[:space:]]'; then
+        echo "Activating conda environment 'overseer'..."
+        source $(conda info --base)/etc/profile.d/conda.sh
+        conda activate overseer
+    else
+        echo "Conda environment 'overseer' does not exist. Please create it first."
+        exit 1
+    fi
+else
+    echo "Conda is not installed or not in PATH. Please install Anaconda or Miniconda."
+    exit 1
+fi
+
+# Install required packages with conda (if not already installed)
+conda install -y -c conda-forge pytorch pandas python-dotenv
+
+# Install remaining packages with pip (inside the conda env)
+pip install transformers datasets kaggle accelerate
 
 # Set up Kaggle API
 echo "Setting up Kaggle API..."
