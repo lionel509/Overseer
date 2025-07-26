@@ -1,5 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
+import datetime
+import os
 
 @dataclass
 class TrainingConfig:
@@ -19,10 +21,16 @@ class TrainingConfig:
     val_split: float = 0.1
     test_split: float = 0.1
     # Output Configuration
-    output_dir: str = "./models/overseer-gemma-3n"
+    output_dir: str = field(default_factory=lambda: TrainingConfig.generate_output_dir())
     save_steps: int = 500
     eval_steps: int = 100
     # Hardware Configuration
     use_gpu: bool = True
     mixed_precision: bool = True
-    dataloader_num_workers: int = 4 
+    dataloader_num_workers: int = 4
+
+    @staticmethod
+    def generate_output_dir():
+        now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        base_model_name = "gemma3n"
+        return os.path.join("./models", f"{base_model_name}_{now}") 

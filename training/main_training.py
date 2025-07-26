@@ -14,6 +14,7 @@ def main():
     parser.add_argument('--download-data', action='store_true', help='Download fresh data from Kaggle')
     parser.add_argument('--use-existing-data', action='store_true', help='Use existing processed data')
     parser.add_argument('--continuous-learning', action='store_true', help='Include user interaction data in training')
+    parser.add_argument('--resume-from-checkpoint', type=str, default=None, help='Path to checkpoint to resume training from')
     args = parser.parse_args()
 
     config = TrainingConfig()
@@ -42,7 +43,10 @@ def main():
     train_dataset = trainer.prepare_dataset(train_data)
     val_dataset = trainer.prepare_dataset(val_data)
     print(f'Starting training with {len(train_data)} training examples...')
-    trainer.train(train_dataset, val_dataset)
+    print("\n================ SAFEGUARDS ENABLED: Training is protected by memory, OOM, and early stopping safeguards ================\n")
+    if args.resume_from_checkpoint:
+        print(f"Resuming training from checkpoint: {args.resume_from_checkpoint}")
+    trainer.train(train_dataset, val_dataset, resume_from_checkpoint=args.resume_from_checkpoint)
     print('Training completed!')
     print(f'Model saved to: {config.output_dir}')
 
