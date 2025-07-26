@@ -25,4 +25,14 @@ class TrainingConfig:
     # Hardware Configuration
     use_gpu: bool = True
     mixed_precision: bool = True
-    dataloader_num_workers: int = 4 
+    dataloader_num_workers: int = 4
+    # Memory Safeguards Configuration
+    max_ram_percent: float = 85.0
+    max_gpu_memory_percent: float = 90.0
+    max_swap_percent: float = 50.0
+    memory_check_interval: int = 30
+    # Checkpoint Configuration
+    checkpoint_save_frequency: int = 500
+    max_checkpoints: int = 5
+    checkpoint_dir: str = "./checkpoints"
+    auto_resume: bool = True 

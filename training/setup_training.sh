@@ -19,7 +19,7 @@ fi
 conda install -y -c conda-forge pytorch pandas python-dotenv
 
 # Install remaining packages with pip (inside the conda env)
-pip install transformers datasets kaggle accelerate
+pip install transformers datasets kaggle accelerate psutil
 
 # Set up Kaggle API
 echo "Setting up Kaggle API..."
@@ -30,6 +30,7 @@ echo "Please place your kaggle.json file in ~/.kaggle/"
 mkdir -p ./datasets
 mkdir -p ./models
 mkdir -p ./logs
+mkdir -p ./checkpoints
 
 # Download base model
 echo "Downloading Gemma 3n base model..."
