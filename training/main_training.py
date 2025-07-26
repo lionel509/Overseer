@@ -14,10 +14,28 @@ def main():
     parser.add_argument('--download-data', action='store_true', help='Download fresh data from Kaggle')
     parser.add_argument('--use-existing-data', action='store_true', help='Use existing processed data')
     parser.add_argument('--continuous-learning', action='store_true', help='Include user interaction data in training')
+<<<<<<< HEAD
     parser.add_argument('--resume-from-checkpoint', type=str, default=None, help='Path to checkpoint to resume training from')
+=======
+    parser.add_argument('--resource-efficient', action='store_true', 
+                       help='Enable resource-efficient mode: slower training but uses fewer system resources')
+>>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
     args = parser.parse_args()
 
     config = TrainingConfig()
+    
+    # Apply resource efficient mode if flag is set
+    if args.resource_efficient:
+        config.resource_efficient_mode = True
+        print("🔋 Resource-efficient mode enabled:")
+        print(f"   - Batch size: {config.batch_size}")
+        print(f"   - Gradient accumulation steps: {config.gradient_accumulation_steps}")
+        print(f"   - Learning rate: {config.learning_rate}")
+        print(f"   - Max sequence length: {config.max_sequence_length}")
+        print(f"   - DataLoader workers: {config.dataloader_num_workers}")
+        print(f"   - Memory thresholds: RAM {config.max_ram_percent}%, GPU {config.max_gpu_memory_percent}%")
+        print("   - Training will be slower but use fewer resources")
+    
     kaggle_collector = KaggleDataCollector()
     dataset_processor = SystemCommandsDataset()
     trainer = OverseerTrainer(config)
