@@ -19,11 +19,29 @@ class OverseerTrainer:
         self.config = config
         hf_token = os.environ.get("HF_TOKEN")
         self.tokenizer = AutoTokenizer.from_pretrained(config.base_model, token=hf_token)
+        
+        # Apply resource-efficient optimizations
+        model_kwargs = {
+            "token": hf_token,
+            "torch_dtype": torch.float16 if config.mixed_precision else torch.float32
+        }
+        
+        if config.resource_efficient_mode:
+            # Use lower precision for memory efficiency
+            model_kwargs["torch_dtype"] = torch.float16
+            # Enable gradient checkpointing for memory efficiency
+            model_kwargs["gradient_checkpointing"] = True
+            print("🔋 Resource-efficient optimizations applied to model loading")
+        
         self.model = AutoModelForCausalLM.from_pretrained(
             config.base_model,
-            token=hf_token,
-            torch_dtype=torch.float16 if config.mixed_precision else torch.float32
+            **model_kwargs
         )
+        
+        # Enable gradient checkpointing if in resource-efficient mode
+        if config.resource_efficient_mode:
+            self.model.gradient_checkpointing_enable()
+        
         special_tokens = {
             "additional_special_tokens": [
                 "<system>", "</system>",
@@ -98,12 +116,21 @@ class OverseerTrainer:
             load_best_model_at_end=True,
             metric_for_best_model="eval_loss",
             greater_is_better=False,
-            fp16=False,
+            fp16=self.config.mixed_precision,
             dataloader_num_workers=self.config.dataloader_num_workers,
             remove_unused_columns=False,
             # Add checkpoint resume support
             resume_from_checkpoint=resume_from_checkpoint,
         )
+        
+        # Apply resource-efficient optimizations
+        if self.config.resource_efficient_mode:
+            training_args.gradient_checkpointing = True
+            training_args.fp16 = True  # Force FP16 for memory efficiency
+            training_args.dataloader_pin_memory = False  # Reduce memory usage
+            training_args.dataloader_num_workers = 1  # Reduce CPU usage
+            training_args.logging_steps = 25  # More frequent logging for monitoring
+            print("🔋 Resource-efficient training arguments applied")
         
         trainer = Trainer(
             model=self.model,

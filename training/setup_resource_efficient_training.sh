@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "🔋 Resource-Efficient Training Setup for Overseer"
+echo "================================================"
+echo ""
+
 # Activate conda environment
 if command -v conda &> /dev/null; then
     if conda info --envs | grep -q '^overseer[[:space:]]'; then
@@ -16,6 +20,7 @@ else
 fi
 
 # Install required packages with conda (if not already installed)
+echo "Installing required packages..."
 conda install -y -c conda-forge pytorch pandas python-dotenv
 
 # Install remaining packages with pip (inside the conda env)
@@ -37,22 +42,27 @@ echo "Downloading Gemma 3n base model..."
 python -c "from transformers import AutoTokenizer, AutoModelForCausalLM; import os; AutoTokenizer.from_pretrained('google/gemma-3n-E4B-it', token=os.environ.get('HF_TOKEN')); AutoModelForCausalLM.from_pretrained('google/gemma-3n-E4B-it', token=os.environ.get('HF_TOKEN'))"
 
 echo ""
-echo "🎯 Training Setup Complete!"
+echo "✅ Resource-Efficient Training Setup Complete!"
 echo ""
-echo "Available training modes:"
-echo "1. Standard training (faster, more resources):"
-echo "   python main_training.py --download-data --continuous-learning"
+echo "🎯 Resource-Efficient Mode Features:"
+echo "   • Reduced batch size (4 instead of 16)"
+echo "   • Increased gradient accumulation (16 steps)"
+echo "   • Lower learning rate (5e-5 instead of 1e-4)"
+echo "   • Reduced sequence length (1024 instead of 2048)"
+echo "   • Fewer data loader workers (1 instead of 4)"
+echo "   • Lower memory thresholds (70% RAM, 75% GPU)"
+echo "   • Gradient checkpointing enabled"
+echo "   • FP16 precision for memory efficiency"
+echo "   • More frequent checkpoints and evaluation"
 echo ""
-echo "2. Resource-efficient training (slower, fewer resources):"
-echo "   python main_training.py --resource-efficient --download-data --continuous-learning"
-echo "   or use the convenience script:"
-echo "   python run_resource_efficient_training.py --download-data --continuous-learning"
+echo "💡 Recommended for systems with:"
+echo "   • Limited RAM (< 16GB)"
+echo "   • Limited GPU memory (< 8GB)"
+echo "   • Need to run other applications during training"
+echo "   • Older hardware or laptops"
 echo ""
-echo "Resource-efficient mode is recommended for:"
-echo "   - Systems with limited RAM (< 16GB)"
-echo "   - Systems with limited GPU memory (< 8GB)"
-echo "   - Running other applications during training"
-echo "   - Training on laptops or older hardware"
+echo "🚀 Starting resource-efficient training..."
 echo ""
-echo "Starting standard training pipeline..."
-python main_training.py --download-data --continuous-learning 
+
+# Run resource-efficient training
+python run_resource_efficient_training.py --download-data --continuous-learning 
