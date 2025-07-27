@@ -1,16 +1,16 @@
-import argparse
 import os
 import json
+import argparse
 from rich.console import Console
 from rich.prompt import Prompt
-from core.core_logic import process_user_input
-from features.filesystem_scanner import scan_directory
-from features.folder_sorter import sort_folder
-from features.auto_organize import auto_organize
-from db.filesystem_db import tag_file, get_tags, search_by_tag, search_by_description
-from inference.inference_local import LocalLLM
-from inference.inference_gemini import GeminiAPI
-from utils.logger import set_debug, set_log, debug, info, error
+from .core.core_logic import process_user_input
+from .features.filesystem_scanner import scan_directory
+from .features.folder_sorter import sort_folder
+from .features.auto_organize import auto_organize
+from .db.filesystem_db import tag_file, get_tags, search_by_tag, search_by_description
+from .inference.inference_local import LocalLLM
+from .inference.inference_gemini import GeminiAPI
+from .utils.logger import set_debug, set_log, debug, info, error
 
 console = Console()
 CONFIG_PATH = os.path.expanduser('~/.overseer/config.json')
