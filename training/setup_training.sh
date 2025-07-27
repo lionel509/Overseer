@@ -19,7 +19,11 @@ fi
 conda install -y -c conda-forge pytorch pandas python-dotenv
 
 # Install remaining packages with pip (inside the conda env)
+<<<<<<< HEAD
+pip install transformers datasets kaggle accelerate pillow timm
+=======
 pip install transformers datasets kaggle accelerate psutil
+>>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
 
 # Set up Kaggle API
 echo "Setting up Kaggle API..."

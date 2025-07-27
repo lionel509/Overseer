@@ -1,5 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
+import datetime
+import os
 
 @dataclass
 class TrainingConfig:
@@ -48,7 +50,7 @@ class TrainingConfig:
     test_split: float = 0.1
     
     # Output Configuration
-    output_dir: str = "./models/overseer-gemma-3n"
+    output_dir: str = field(default_factory=lambda: TrainingConfig.generate_output_dir())
     save_steps: int = 500
     eval_steps: int = 100
     
@@ -56,6 +58,14 @@ class TrainingConfig:
     use_gpu: bool = True
     mixed_precision: bool = True
     dataloader_num_workers: int = 4
+<<<<<<< HEAD
+
+    @staticmethod
+    def generate_output_dir():
+        now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        base_model_name = "gemma3n"
+        return os.path.join("./models", f"{base_model_name}_{now}") 
+=======
     
     # Memory Safeguards Configuration
     max_ram_percent: float = 85.0
@@ -68,3 +78,4 @@ class TrainingConfig:
     max_checkpoints: int = 5
     checkpoint_dir: str = "./checkpoints"
     auto_resume: bool = True 
+>>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
