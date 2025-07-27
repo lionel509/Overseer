@@ -72,3 +72,51 @@ python main.py
 - **Uptime**: 99.9% availability for system monitoring
 
 The backend service is designed to be the intelligent brain of Overseer, providing powerful AI capabilities while maintaining privacy and performance through local processing.
+
+## Overseer CLI Tool
+
+The Overseer CLI tool provides a command-line interface to interact with the Overseer system assistant. It supports two modes:
+
+- **Local Mode**: Uses a local LLM (e.g., Gemma 3n via Hugging Face Transformers) for inference.
+- **Gemini API Mode**: Uses the Google Gemini API for inference (requires API key).
+
+### Usage
+
+```bash
+# Local mode (requires local model download)
+python -m backend.cli.overseer_cli --mode local --prompt "Find my Python files about machine learning"
+
+# Gemini API mode (requires API key)
+python -m backend.cli.overseer_cli --mode gemini --prompt "I need nvidia monitoring tools"
+```
+
+You can also run in interactive mode (REPL) by omitting the --prompt argument.
+
+See `backend/cli/README.md` for more details.
+
+# Quick CLI Install
+
+1. Clone the repo and enter the backend directory:
+   ```bash
+   git clone <repo-url>
+   cd Overseer/backend
+   ```
+2. (Optional) Activate your conda environment:
+   ```bash
+   conda activate <your-env>
+   ```
+3. Run the install script:
+   ```bash
+   bash install_cli.sh
+   ```
+   Or manually:
+   ```bash
+   pip install -r requirements.txt
+   pip install -e .
+   ```
+4. Run the CLI from anywhere:
+   ```bash
+   overseer --mode local --prompt "Find my Python files about machine learning"
+   ```
+
+See backend/cli/README.md for more details.

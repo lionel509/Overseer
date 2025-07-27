@@ -1,6 +1,6 @@
 # Core ML and Deep Learning
 torch>=2.0.0
-transformers>=4.35.0
+transformers>=4.40.0
 datasets>=2.14.0
 accelerate>=0.24.0
 peft>=0.7.0
@@ -35,3 +35,12 @@ ipykernel>=6.25.0
 
 # Optional: For enhanced performance
 flash-attn>=2.3.0; platform_machine=="x86_64"
+
+# CLI and inference dependencies
+rich>=13.0.0
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.12.2
+google-generativeai>=0.3.0
+# argparse is part of stdlib, but listed for clarity
+
+pysqlcipher3>=1.0.0

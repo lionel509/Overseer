@@ -1,15 +1,25 @@
-import sqlite3
+import os
 import json
 from datetime import datetime
 from typing import Dict, List, Optional
+import pysqlcipher3.dbapi2 as sqlcipher
 
 class ContinuousLearningManager:
-    def __init__(self, db_path: str = "user_interactions.db"):
+    def __init__(self, db_path: str = "user_interactions_encrypted.db"):
         self.db_path = db_path
+        self.db_key = os.environ.get('OVERSEER_DB_KEY')
+        if not self.db_key:
+            raise RuntimeError('OVERSEER_DB_KEY environment variable not set!')
         self.init_database()
-    def init_database(self):
-        conn = sqlite3.connect(self.db_path)
+
+    def get_connection(self):
+        conn = sqlcipher.connect(self.db_path)
         cursor = conn.cursor()
+        cursor.execute(f"PRAGMA key='{self.db_key}';")
+        return conn, cursor
+
+    def init_database(self):
+        conn, cursor = self.get_connection()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS user_interactions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,9 +33,9 @@ class ContinuousLearningManager:
         ''')
         conn.commit()
         conn.close()
+
     def log_interaction(self, user_input: str, ai_response: str, context: Dict, success: bool = True, feedback: int = 0):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self.get_connection()
         cursor.execute('''
             INSERT INTO user_interactions 
             (user_input, ai_response, user_feedback, context, success)
@@ -33,9 +43,9 @@ class ContinuousLearningManager:
         ''', (user_input, ai_response, feedback, json.dumps(context), success))
         conn.commit()
         conn.close()
+
     def get_training_data(self, min_feedback: int = 0) -> List[Dict]:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self.get_connection()
         cursor.execute('''
             SELECT user_input, ai_response, context 
             FROM user_interactions 
@@ -52,9 +62,9 @@ class ContinuousLearningManager:
                 'context': json.loads(context)
             })
         return training_data
+
     def should_retrain(self, threshold: int = 1000) -> bool:
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn, cursor = self.get_connection()
         cursor.execute('''
             SELECT COUNT(*) FROM user_interactions 
             WHERE timestamp > datetime('now', '-7 days')
