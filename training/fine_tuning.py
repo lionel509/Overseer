@@ -10,11 +10,7 @@ from transformers.trainer import Trainer
 from datasets import Dataset
 from typing import Dict, List
 from training_config import TrainingConfig
-<<<<<<< HEAD
-from safeguards import MemoryMonitor, OOMHandler, EarlyStopping, SafeguardLogger
-=======
 from training_safeguards import TrainingSafeguards, MemoryThresholds, CheckpointConfig
->>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
@@ -33,9 +29,18 @@ class OverseerTrainer:
         if config.resource_efficient_mode:
             # Use lower precision for memory efficiency
             model_kwargs["torch_dtype"] = torch.float16
-            # Enable gradient checkpointing for memory efficiency
-            model_kwargs["gradient_checkpointing"] = True
             print("🔋 Resource-efficient optimizations applied to model loading")
+        
+        if config.mac_mode:
+            # Use float32 for MPS compatibility
+            model_kwargs["torch_dtype"] = torch.float32
+            print("🍎 Mac optimizations applied to model loading")
+        
+        if config.cpu_only_mode:
+            # Force CPU device for CPU-only mode
+            model_kwargs["torch_dtype"] = torch.float32
+            model_kwargs["device_map"] = "cpu"
+            print("🖥️  CPU-only optimizations applied to model loading")
         
         self.model = AutoModelForCausalLM.from_pretrained(
             config.base_model,
@@ -92,15 +97,6 @@ class OverseerTrainer:
             'output': [item['output'] for item in data]
         })
         return dataset.map(tokenize_function, batched=True)
-<<<<<<< HEAD
-    def train(self, train_dataset: Dataset, val_dataset: Dataset, resume_from_checkpoint: str = None):
-        print("\n================ SAFEGUARDS ENABLED: Training is protected by memory, OOM, and early stopping safeguards ================\n")
-        logger = SafeguardLogger()
-        memory_monitor = MemoryMonitor()
-        oom_handler = OOMHandler()
-        early_stopper = EarlyStopping()
-        batch_size = self.config.batch_size
-=======
     
     def train(self, train_dataset: Dataset, val_dataset: Dataset):
         # Initialize training safeguards
@@ -113,12 +109,11 @@ class OverseerTrainer:
             resume_from_checkpoint = latest_checkpoint['checkpoint_path']
             print(f"Resuming from checkpoint: {resume_from_checkpoint}")
         
->>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
         training_args = TrainingArguments(
             output_dir=self.config.output_dir,
             num_train_epochs=self.config.num_epochs,
-            per_device_train_batch_size=batch_size,
-            per_device_eval_batch_size=batch_size,
+            per_device_train_batch_size=self.config.batch_size,
+            per_device_eval_batch_size=self.config.batch_size,
             gradient_accumulation_steps=self.config.gradient_accumulation_steps,
             learning_rate=self.config.learning_rate,
             warmup_steps=self.config.warmup_steps,
@@ -146,36 +141,32 @@ class OverseerTrainer:
             training_args.logging_steps = 25  # More frequent logging for monitoring
             print("🔋 Resource-efficient training arguments applied")
         
+        # Apply Mac optimizations
+        if self.config.mac_mode:
+            training_args.fp16 = False  # Disable FP16 for MPS compatibility
+            training_args.dataloader_pin_memory = False  # Reduce memory usage
+            training_args.dataloader_num_workers = 0  # Disable multiprocessing for Mac
+            training_args.logging_steps = 10  # More frequent logging for monitoring
+            training_args.gradient_checkpointing = True  # Enable gradient checkpointing for memory efficiency
+            training_args.remove_unused_columns = True  # Remove unused columns to save memory
+            print("🍎 Mac training arguments applied")
+        
+        # Apply CPU-only optimizations
+        if self.config.cpu_only_mode:
+            training_args.fp16 = False  # Disable FP16 for CPU training
+            training_args.dataloader_pin_memory = False  # Reduce memory usage
+            training_args.dataloader_num_workers = 0  # Disable multiprocessing for CPU
+            training_args.logging_steps = 5  # More frequent logging for monitoring
+            training_args.gradient_checkpointing = True  # Enable gradient checkpointing for memory efficiency
+            training_args.remove_unused_columns = True  # Remove unused columns to save memory
+            print("🖥️  CPU-only training arguments applied")
+        
         trainer = Trainer(
             model=self.model,
             args=training_args,
             train_dataset=train_dataset,
             eval_dataset=val_dataset,
         )
-<<<<<<< HEAD
-        try:
-            if not memory_monitor.check_memory():
-                logger.log("Memory usage exceeded before training started.", level="error")
-                print("[SAFEGUARD] Memory usage exceeded before training. Aborting.")
-                return
-            trainer.train(resume_from_checkpoint=resume_from_checkpoint)
-        except RuntimeError as e:
-            if 'out of memory' in str(e).lower():
-                logger.log("OOM error detected during training. Attempting to reduce batch size.", level="error")
-                print("[SAFEGUARD] OOM error detected. Reducing batch size and retrying...")
-                batch_size = oom_handler.handle_oom(batch_size)
-                training_args.per_device_train_batch_size = batch_size
-                training_args.per_device_eval_batch_size = batch_size
-                trainer.args = training_args
-                torch.cuda.empty_cache()
-                trainer.train(resume_from_checkpoint=resume_from_checkpoint)
-            else:
-                logger.log(f"Unhandled training error: {e}", level="error")
-                raise
-        # Early stopping (manual, after training loop)
-        # NOTE: For full integration, a custom callback would be better, but this is a stub for now.
-        # After each epoch, you could call early_stopper.step(val_loss) and break if True.
-=======
         
         # Custom training loop with safeguards
         try:
@@ -190,7 +181,6 @@ class OverseerTrainer:
             raise
         
         # Save final model
->>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
         trainer.save_model()
         self.tokenizer.save_pretrained(self.config.output_dir)
         

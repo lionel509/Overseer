@@ -1,7 +1,7 @@
 import os
 import tempfile
-from db.filesystem_db import query_file_info, DB_PATH
-from features.filesystem_scanner import scan_directory
+from ..db.filesystem_db import query_file_info, DB_PATH
+from .filesystem_scanner import scan_directory
 
 def test_scanner():
     with tempfile.TemporaryDirectory() as tmpdir:

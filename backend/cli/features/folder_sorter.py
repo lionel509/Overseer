@@ -1,7 +1,7 @@
 import os
 import shutil
 import argparse
-from db.filesystem_db import query_file_info, tag_file
+from ..db.filesystem_db import query_file_info, tag_file
 
 def llm_sort_files(files, llm_backend):
     # files: list of (path, type, size, mtime, tags)

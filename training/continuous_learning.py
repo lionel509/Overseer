@@ -2,20 +2,20 @@ import os
 import json
 from datetime import datetime
 from typing import Dict, List, Optional
-import pysqlcipher3.dbapi2 as sqlcipher
+import sqlite3 as sqlcipher
 
 class ContinuousLearningManager:
     def __init__(self, db_path: str = "user_interactions_encrypted.db"):
         self.db_path = db_path
-        self.db_key = os.environ.get('OVERSEER_DB_KEY')
-        if not self.db_key:
-            raise RuntimeError('OVERSEER_DB_KEY environment variable not set!')
+        # self.db_key = os.environ.get('OVERSEER_DB_KEY')
+        # if not self.db_key:
+        #     raise RuntimeError('OVERSEER_DB_KEY environment variable not set!')
         self.init_database()
 
     def get_connection(self):
         conn = sqlcipher.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute(f"PRAGMA key='{self.db_key}';")
+        # cursor.execute(f"PRAGMA key='{self.db_key}';")  # Removed for standard SQLite
         return conn, cursor
 
     def init_database(self):

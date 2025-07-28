@@ -1,6 +1,6 @@
 import os
-from features.folder_sorter import llm_sort_files
-from db.filesystem_db import query_file_info
+from .folder_sorter import llm_sort_files
+from ..db.filesystem_db import query_file_info
 
 def auto_organize(folders, llm_backend, dry_run=False):
     moved = []

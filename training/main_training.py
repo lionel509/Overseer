@@ -14,18 +14,43 @@ def main():
     parser.add_argument('--download-data', action='store_true', help='Download fresh data from Kaggle')
     parser.add_argument('--use-existing-data', action='store_true', help='Use existing processed data')
     parser.add_argument('--continuous-learning', action='store_true', help='Include user interaction data in training')
-<<<<<<< HEAD
-    parser.add_argument('--resume-from-checkpoint', type=str, default=None, help='Path to checkpoint to resume training from')
-=======
     parser.add_argument('--resource-efficient', action='store_true', 
                        help='Enable resource-efficient mode: slower training but uses fewer system resources')
->>>>>>> 6dbc57b5c429104813d2331756c724e071791c43
+    parser.add_argument('--mac', action='store_true', 
+                       help='Enable Mac/Apple Silicon optimizations (disables FP16, uses MPS)')
+    parser.add_argument('--cpu-only', action='store_true', 
+                       help='Force CPU-only training (for systems with limited GPU memory)')
+    parser.add_argument('--resume-from-checkpoint', type=str, help='Path to checkpoint to resume training from')
     args = parser.parse_args()
 
     config = TrainingConfig()
     
-    # Apply resource efficient mode if flag is set
-    if args.resource_efficient:
+    # Apply Mac optimizations if flag is set (takes precedence)
+    if args.mac:
+        config.mac_mode = True
+        print("🍎 Mac/Apple Silicon mode enabled:")
+        print(f"   - Batch size: {config.batch_size}")
+        print(f"   - Gradient accumulation steps: {config.gradient_accumulation_steps}")
+        print(f"   - Learning rate: {config.learning_rate}")
+        print(f"   - Max sequence length: {config.max_sequence_length}")
+        print(f"   - DataLoader workers: {config.dataloader_num_workers}")
+        print(f"   - Memory thresholds: RAM {config.max_ram_percent}%, GPU {config.max_gpu_memory_percent}%")
+        print("   - Disabled FP16 mixed precision (not supported on MPS)")
+        print("   - Optimized for Apple Silicon memory management")
+        print("⚠️  Note: If you encounter memory issues, consider using CPU-only mode")
+    # Apply CPU-only mode if flag is set
+    elif args.cpu_only:
+        config.cpu_only_mode = True
+        print("🖥️  CPU-only mode enabled:")
+        print(f"   - Batch size: {config.batch_size}")
+        print(f"   - Gradient accumulation steps: {config.gradient_accumulation_steps}")
+        print(f"   - Learning rate: {config.learning_rate}")
+        print(f"   - Max sequence length: {config.max_sequence_length}")
+        print(f"   - DataLoader workers: {config.dataloader_num_workers}")
+        print(f"   - Memory thresholds: RAM {config.max_ram_percent}%, GPU {config.max_gpu_memory_percent}%")
+        print("   - Training will be slower but use CPU only")
+    # Apply resource efficient mode if flag is set (only if not Mac or CPU-only)
+    elif args.resource_efficient:
         config.resource_efficient_mode = True
         print("🔋 Resource-efficient mode enabled:")
         print(f"   - Batch size: {config.batch_size}")
@@ -64,7 +89,7 @@ def main():
     print("\n================ SAFEGUARDS ENABLED: Training is protected by memory, OOM, and early stopping safeguards ================\n")
     if args.resume_from_checkpoint:
         print(f"Resuming training from checkpoint: {args.resume_from_checkpoint}")
-    trainer.train(train_dataset, val_dataset, resume_from_checkpoint=args.resume_from_checkpoint)
+    trainer.train(train_dataset, val_dataset)
     print('Training completed!')
     print(f'Model saved to: {config.output_dir}')
 

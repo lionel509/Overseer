@@ -1,16 +1,16 @@
 import os
-import pysqlcipher3.dbapi2 as sqlcipher
+import sqlite3 as sqlcipher
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'tool_database.db')
-DB_KEY = os.environ.get('OVERSEER_DB_KEY')
+# DB_KEY = os.environ.get('OVERSEER_DB_KEY')
 
-if not DB_KEY:
-    raise RuntimeError('OVERSEER_DB_KEY environment variable not set!')
+# if not DB_KEY:
+#     raise RuntimeError('OVERSEER_DB_KEY environment variable not set!')
 
 def get_connection():
     conn = sqlcipher.connect(DB_PATH)
     c = conn.cursor()
-    c.execute(f"PRAGMA key='{DB_KEY}';")
+    # c.execute(f"PRAGMA key='{DB_KEY}';")  # Removed for standard SQLite
     # Create table if not exists
     c.execute('''CREATE TABLE IF NOT EXISTS tools (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
