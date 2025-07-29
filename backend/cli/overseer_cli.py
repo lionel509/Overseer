@@ -567,117 +567,118 @@ Overseer: ACTION: run_command command="sudo apt update && sudo apt upgrade"
                     continue
                 if action:
                     debug(f"[ACTION DETECTED] {action} {params}")
-                    # Folder intent follow-up: if user said 'folder' or 'directory' and LLM gave search_files, ask if they meant list_folder
-                    if action == 'search_files' and any(word in user_input.lower() for word in ['folder', 'directory']):
-                        likely_folder = None
-                        # Try to guess the folder from the query
-                        match = re.search(r'query=([^ ]+)', params)
-                        query = match.group(1).strip() if match else ''
-                        if 'downloads' in query:
-                            likely_folder = '~/Downloads'
-                        elif 'documents' in query:
-                            likely_folder = '~/Documents'
-                        elif 'desktop' in query:
-                            likely_folder = '~/Desktop'
-                        elif os.path.isdir(os.path.expanduser(query)):
-                            likely_folder = query
-                        if likely_folder:
-                            try:
-                                import questionary
-                                confirm = questionary.confirm(f"Did you want to list the contents of {likely_folder} instead?").ask()
-                            except ImportError:
-                                confirm = input(f"Did you want to list the contents of {likely_folder} instead? (y/n): ").strip().lower() in ('y', 'yes')
-                            if confirm:
-                                from .features.file_search import get_all_files
-                                def db_fallback_func(folder_path):
-                                    files = get_all_files(os.path.expanduser(folder_path))
-                                    return files
-                                result = list_folder_with_confirmation(likely_folder, db_fallback_func)
-                                console.print(f'[bold green]overseer:[/bold green] {result}')
-                                continue
-                    if action == 'sort_files':
-                        match = re.search(r'path=([^ ]+)', params)
-                        path = match.group(1).strip() if match else os.path.expanduser('~')
-                        console.print(f'[bold green]overseer:[/bold green] Sorting files in {path}...')
-                        moved = sort_folder(path, ask_create_folder=not full_control_repl, ask_fn=Prompt.ask if not full_control_repl else None)
-                        if not moved:
-                            console.print('[bold green]overseer:[/bold green] No files to sort.')
+                    try:
+                        # Folder intent follow-up: if user said 'folder' or 'directory' and LLM gave search_files, ask if they meant list_folder
+                        if action == 'search_files' and any(word in user_input.lower() for word in ['folder', 'directory']):
+                            likely_folder = None
+                            # Try to guess the folder from the query
+                            match = re.search(r'query=([^ ]+)', params)
+                            query = match.group(1).strip() if match else ''
+                            if 'downloads' in query:
+                                likely_folder = '~/Downloads'
+                            elif 'documents' in query:
+                                likely_folder = '~/Documents'
+                            elif 'desktop' in query:
+                                likely_folder = '~/Desktop'
+                            elif os.path.isdir(os.path.expanduser(query)):
+                                likely_folder = query
+                            if likely_folder:
+                                try:
+                                    import questionary
+                                    confirm = questionary.confirm(f"Did you want to list the contents of {likely_folder} instead?").ask()
+                                except ImportError:
+                                    confirm = input(f"Did you want to list the contents of {likely_folder} instead? (y/n): ").strip().lower() in ('y', 'yes')
+                                if confirm:
+                                    from .features.file_search import get_all_files
+                                    def db_fallback_func(folder_path):
+                                        files = get_all_files(os.path.expanduser(folder_path))
+                                        return files
+                                    result = list_folder_with_confirmation(likely_folder, db_fallback_func)
+                                    console.print(f'[bold green]overseer:[/bold green] {result}')
+                                    continue
+                        if action == 'sort_files':
+                            match = re.search(r'path=([^ ]+)', params)
+                            path = match.group(1).strip() if match else os.path.expanduser('~')
+                            console.print(f'[bold green]overseer:[/bold green] Sorting files in {path}...')
+                            moved = sort_folder(path, ask_create_folder=not full_control_repl, ask_fn=Prompt.ask if not full_control_repl else None)
+                            if not moved:
+                                console.print('[bold green]overseer:[/bold green] No files to sort.')
+                            else:
+                                for src, dst in moved:
+                                    console.print(f'[bold green]overseer:[/bold green] Moved: {src} -> {dst}')
+                            continue
+                        elif action == 'search_files':
+                            match = re.search(r'query=([^ ]+)', params)
+                            query = match.group(1).strip() if match else ''
+                            from .features.file_search import search_files
+                            results = search_files(query)
+                            files = [r for r in results.split('\n') if r and 'No matching files found' not in r]
+                            session.last_search_results = files
+                            session.last_selected_file = files[0] if files else None
+                            session.last_action = f'search_files: {query}'
+                            print_file_results([(r, '', '', '', '') for r in files])
+                            session.history.append((user_input, action, files))
+                            break
+                        elif action == 'list_folder':
+                            match = re.search(r'path=([^ ]+)', params)
+                            folder = match.group(1).strip() if match else os.path.expanduser('~')
+                            from .features.file_search import get_all_files
+                            def db_fallback_func(folder_path):
+                                files = get_all_files(os.path.expanduser(folder_path))
+                                return files
+                            result = list_folder_with_confirmation(folder, db_fallback_func)
+                            session.last_action = f'list_folder: {folder}'
+                            session.history.append((user_input, action, result))
+                            console.print(f'[bold green]overseer:[/bold green] {result}')
+                            break
+                        elif action == 'tag_file':
+                            match = re.search(r'path=([^ ]+)\s+tags=([^ ]+)', params)
+                            if match:
+                                file_path = match.group(1).strip()
+                                tags = match.group(2).strip()
+                                tag_file(file_path, tags)
+                                new_tags = get_tags(file_path)
+                                console.print(f'[bold green]overseer:[/bold green] Tagged {file_path} with: {new_tags}')
+                            else:
+                                console.print('[bold green]overseer:[/bold green] Could not parse tag command.')
+                            continue
+                        elif action == 'auto_organize':
+                            match = re.search(r'folders=([^ ]+)', params)
+                            folders = [os.path.expanduser(f.strip()) for f in match.group(1).split(',')] if match else []
+                            if not folders:
+                                home = os.path.expanduser('~')
+                                folders = [home, os.path.join(home, 'Documents'), os.path.join(home, 'Downloads')]
+                            moved = auto_organize(folders, llm_backend)
+                            if not moved:
+                                console.print('[bold green]overseer:[/bold green] No files to move.')
+                            else:
+                                for src, dst in moved:
+                                    console.print(f'[bold green]overseer:[/bold green] Moved: {src} -> {dst}')
+                            continue
+                        elif action == 'run_command':
+                            match_cmd = re.search(r'command="([^"]+)"', params)
+                            match_path = re.search(r'path=([^ ]+)', params)
+                            command = match_cmd.group(1) if match_cmd else ''
+                            path = match_path.group(1).strip() if match_path else None
+                            result = run_command_with_sandbox(command, path, always_confirm=always_confirm_commands)
+                            session.last_command = command
+                            session.last_action = f'run_command: {command}'
+                            session.history.append((user_input, action, result))
+                            console.print(f'[bold green]overseer:[/bold green] {result}')
+                            break
                         else:
-                            for src, dst in moved:
-                                console.print(f'[bold green]overseer:[/bold green] Moved: {src} -> {dst}')
-                        continue
-                    elif action == 'search_files':
-                        match = re.search(r'query=([^ ]+)', params)
-                        query = match.group(1).strip() if match else ''
-                        from .features.file_search import search_files
-                        results = search_files(query)
-                        files = [r for r in results.split('\n') if r and 'No matching files found' not in r]
-                        session.last_search_results = files
-                        session.last_selected_file = files[0] if files else None
-                        session.last_action = f'search_files: {query}'
-                        print_file_results([(r, '', '', '', '') for r in files])
-                        session.history.append((user_input, action, files))
-                        break
-                    elif action == 'list_folder':
-                        match = re.search(r'path=([^ ]+)', params)
-                        folder = match.group(1).strip() if match else os.path.expanduser('~')
-                        from .features.file_search import get_all_files
-                        def db_fallback_func(folder_path):
-                            files = get_all_files(os.path.expanduser(folder_path))
-                            return files
-                        result = list_folder_with_confirmation(folder, db_fallback_func)
-                        session.last_action = f'list_folder: {folder}'
-                        session.history.append((user_input, action, result))
-                        console.print(f'[bold green]overseer:[/bold green] {result}')
-                        break
-                    elif action == 'tag_file':
-                        match = re.search(r'path=([^ ]+)\s+tags=([^ ]+)', params)
-                        if match:
-                            file_path = match.group(1).strip()
-                            tags = match.group(2).strip()
-                            tag_file(file_path, tags)
-                            new_tags = get_tags(file_path)
-                            console.print(f'[bold green]overseer:[/bold green] Tagged {file_path} with: {new_tags}')
+                            console.print(f'[bold green]overseer:[/bold green] {response}')
+                            break
+                    except Exception as e:
+                        show_error(f"Error during action '{action}'.", e)
+                        choice = ask_retry_skip_abort()
+                        if choice in ('Retry', 'r'):
+                            continue
+                        elif choice in ('Skip', 's'):
+                            break
+                        elif choice in ('Abort', 'a'):
+                            return
                         else:
-                            console.print('[bold green]overseer:[/bold green] Could not parse tag command.')
-                        continue
-                    elif action == 'auto_organize':
-                        match = re.search(r'folders=([^ ]+)', params)
-                        folders = [os.path.expanduser(f.strip()) for f in match.group(1).split(',')] if match else []
-                        if not folders:
-                            home = os.path.expanduser('~')
-                            folders = [home, os.path.join(home, 'Documents'), os.path.join(home, 'Downloads')]
-                        moved = auto_organize(folders, llm_backend)
-                        if not moved:
-                            console.print('[bold green]overseer:[/bold green] No files to move.')
-                        else:
-                            for src, dst in moved:
-                                console.print(f'[bold green]overseer:[/bold green] Moved: {src} -> {dst}')
-                        continue
-                    elif action == 'run_command':
-                        match_cmd = re.search(r'command="([^"]+)"', params)
-                        match_path = re.search(r'path=([^ ]+)', params)
-                        command = match_cmd.group(1) if match_cmd else ''
-                        path = match_path.group(1).strip() if match_path else None
-                        result = run_command_with_sandbox(command, path, always_confirm=always_confirm_commands)
-                        session.last_command = command
-                        session.last_action = f'run_command: {command}'
-                        session.history.append((user_input, action, result))
-                        console.print(f'[bold green]overseer:[/bold green] {result}')
-                        break
-                    else:
-                        console.print(f'[bold green]overseer:[/bold green] {response}')
-                        break
-                except Exception as e:
-                    show_error(f"Error during action '{action}'.", e)
-                    choice = ask_retry_skip_abort()
-                    if choice in ('Retry', 'r'):
-                        continue
-                    elif choice in ('Skip', 's'):
-                        break
-                    elif choice in ('Abort', 'a'):
-                        return
-                    else:
-                        break
+                            break
             except (KeyboardInterrupt, EOFError):
                 break 
