@@ -43,20 +43,22 @@ function App() {
               justifyContent: 'center',
             }}
           >
-            <div style={{ position: 'relative', background: '#16281a', borderRadius: 12, boxShadow: '0 4px 32px #0008', padding: '2em', minWidth: 340, maxWidth: '90vw' }}>
+            <div style={{ position: 'relative', background: '#16281a', borderRadius: 12, boxShadow: '0 4px 32px #0008', padding: '3em 2.5em', minWidth: 480, maxWidth: '96vw', width: 640, maxHeight: '90vh', overflowY: 'auto' }}>
               <button
                 aria-label="Close settings"
                 onClick={() => setShowSettings(false)}
                 style={{
                   position: 'absolute',
-                  top: 12,
-                  right: 12,
+                  top: 18,
+                  right: 18,
                   background: 'none',
                   border: 'none',
-                  fontSize: 24,
+                  fontSize: 28,
                   color: '#b6ffb6',
                   cursor: 'pointer',
                   zIndex: 10,
+                  boxShadow: 'none',
+                  outline: 'none',
                 }}
               >
                 ×
