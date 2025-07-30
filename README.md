@@ -73,19 +73,21 @@ Overseer/
 
 ### Installation
 
+**📖 For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md)**
+
+#### Quick Install (Recommended)
 ```bash
-# Clone the repository
+# Clone and install in one go
 git clone https://github.com/your-username/overseer.git
 cd Overseer
+pip install -e ./backend/
+```
 
-# Install backend dependencies
-cd backend
-pip install -r requirements.txt
-pip install -e .
-
-# Install desktop app dependencies
-cd ../desktop-app
-npm install
+#### Using Installation Script
+```bash
+git clone https://github.com/your-username/overseer.git
+cd Overseer
+./install.sh
 ```
 
 ### Basic Usage

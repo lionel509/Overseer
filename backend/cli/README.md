@@ -24,7 +24,7 @@ Overseer CLI is now a **unified, intelligent system** that combines three modes 
 python overseer_cli.py
 ```
 
-### **Command Types**
+### **Command Types**  
 
 **Fast Mode Commands** (Immediate response):
 ```bash

@@ -237,7 +237,7 @@ def main():
     parser = argparse.ArgumentParser(description='Overseer Optimized CLI')
     parser.add_argument('--version', action='store_true', help='Show version')
     parser.add_argument('--stats', action='store_true', help='Show performance stats')
-    parser.add_argument('--fast', action='store_true', help='Force fast mode only')
+    # parser.add_argument('--fast', action='store_true', help='Force fast mode only')
     parser.add_argument('--ai', action='store_true', help='Force AI mode')
     
     args, unknown = parser.parse_known_args()
