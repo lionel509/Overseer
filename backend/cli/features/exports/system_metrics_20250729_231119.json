@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": 1753841240.305395,
+    "cpu_percent": 22.9,
+    "memory_percent": 69.9,
+    "disk_percent": 7.1589813232421875,
+    "network_sent_mb": 16.0,
+    "network_recv_mb": 1.6,
+    "process_count": 11.729290008544922,
+    "load_average_1": 926.3224220275879,
+    "load_average_5": 3166.9755859375,
+    "load_average_15": 196.265625,
+    "temperature": 0.0,
+    "battery_percent": 0.0,
+    "battery_plugged": 780
+  }
+]
