@@ -1,7 +1,6 @@
 import os
 import sqlite3 as sqlcipher
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'tool_database.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '../../db/tool_database.db')
 # DB_KEY = os.environ.get('OVERSEER_DB_KEY')
 
 # if not DB_KEY:

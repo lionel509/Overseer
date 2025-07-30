@@ -2,7 +2,7 @@ import os
 from continuous_learning import ContinuousLearningManager
 
 def test_log_and_retrieve():
-    db_path = "test_user_interactions_encrypted.db"
+    db_path = "../backend/db/test_user_interactions.db"
     if os.path.exists(db_path):
         os.remove(db_path)
     os.environ['OVERSEER_DB_KEY'] = 'testkey123'  # For test only

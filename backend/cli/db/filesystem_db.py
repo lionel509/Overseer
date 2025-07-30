@@ -1,8 +1,7 @@
 import os
 import sqlite3 as sqlcipher
 import numpy as np
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'filesystem_info.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '../../db/filesystem_info.db')
 # DB_KEY = os.environ.get('OVERSEER_DB_KEY')
 
 # if not DB_KEY:
