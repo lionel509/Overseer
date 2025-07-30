@@ -247,13 +247,16 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* Chat Interface Responsive Styles */
+.chat-root, .chat-header, .chat-title, .chat-desc, .chat-messages, .chat-bubble, .chat-bubble-user, .chat-bubble-assistant, .chat-content, .chat-timestamp, .chat-typing, .chat-dot, .chat-input-bar, .chat-textarea, .chat-send-btn {
+  font-family: inherit;
+}
+
 .chat-root {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   position: relative;
-  /* padding: 0; */
 }
 
 .chat-header {

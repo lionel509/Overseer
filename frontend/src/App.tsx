@@ -21,11 +21,10 @@ function App() {
           >
             {/* Settings icon from icons8 */}
             <img
-              src="https://img.icons8.com/?size=100&id=2969&format=png&color=000000"
+              src="https://img.icons8.com/?size=100&id=2969&format=png&color=018141"
               alt="Settings"
               width={28}
               height={28}
-              style={{ display: 'block', filter: 'invert(54%) sepia(98%) saturate(749%) hue-rotate(86deg) brightness(104%) contrast(101%)' }}
             />
           </button>
         </div>
