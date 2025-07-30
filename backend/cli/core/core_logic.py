@@ -1,6 +1,6 @@
-from ..features.tool_recommender import recommend_tools
-from ..features.command_corrector import correct_command
-from ..features.file_search import search_files
+from ..features.ai_organization.tool_recommender import recommend_tools
+from ..features.ai_organization.command_corrector import correct_command
+from ..features.ai_organization.file_search import search_files
 
 
 def process_user_input(prompt: str) -> str:

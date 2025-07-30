@@ -1,122 +1,278 @@
-# Backend Service
-## Python FastAPI Backend for Overseer
+# Overseer Backend Service
 
-### 🎯 **Purpose**
-The backend service is the core engine of Overseer, responsible for:
-- **AI Processing**: Gemma 3n model integration and inference
-- **System Integration**: Direct access to system resources and processes
-- **Data Management**: File indexing, system monitoring, and knowledge base
-- **API Services**: RESTful endpoints and WebSocket communication for the desktop app
+## 🎯 **Purpose**
+The backend service is the intelligent core engine of Overseer, providing comprehensive AI-powered system management capabilities. It integrates advanced LLM models (Gemma 3n, Ollama) with machine learning for intelligent system monitoring, optimization, and automation.
 
-### 🏗️ **Architecture**
+### 🧠 **Core Capabilities**
+- **AI Processing**: Advanced LLM integration with Gemma 3n and Ollama for natural language understanding
+- **System Integration**: Direct access to system resources with intelligent monitoring and control
+- **Machine Learning**: ML-powered analytics, pattern recognition, and predictive capabilities
+- **Data Management**: Intelligent file indexing, system monitoring, and knowledge base management
+- **API Services**: RESTful endpoints and WebSocket communication for real-time desktop app integration
+
+---
+
+## 🏗️ **Architecture**
+
 ```
 backend/
-├── core/           # Core AI and system functionality
-├── modules/        # Feature-specific modules
-├── interfaces/     # API and communication layers
-├── knowledge/      # Knowledge base and data stores
-├── main.py         # FastAPI application entry point
-├── requirements.txt # Python dependencies
-└── config.py       # Configuration management
+├── cli/              # Command-line interface with comprehensive LLM integration
+│   ├── features/     # AI-powered features (monitoring, analytics, organization)
+│   ├── core/         # Core logic and AI processing
+│   ├── inference/    # LLM integration (local, Gemini API)
+│   ├── security/     # Security and sandbox systems
+│   ├── db/           # Database and knowledge stores
+│   └── docs/         # Comprehensive documentation
+├── core/             # Core AI and system functionality
+├── modules/          # Feature-specific modules
+├── interfaces/       # API and communication layers
+├── knowledge/        # Knowledge base and data stores
+├── db/              # Database files and configurations
+└── tests/           # Comprehensive test suites
 ```
 
-### 🚀 **Key Features**
-- **Gemma 3n Integration**: Local AI model inference with Ollama
-- **System Monitoring**: Real-time CPU, memory, disk, and process tracking
-- **File Intelligence**: Content analysis, semantic search, and organization
-- **Command Processing**: Natural language to system command translation
-- **Security Scanning**: Vulnerability detection and system health checks
+---
 
-### 🔧 **Technology Stack**
-- **Framework**: FastAPI for high-performance async API
-- **AI Integration**: Ollama for local Gemma 3n model serving
-- **System APIs**: psutil for system monitoring and control
-- **Database**: SQLite for local data storage
+## 🚀 **Key Features**
+
+### 🤖 **AI-Powered Core Features**
+- **LLM Integration**: Direct integration with Gemma 3n, Ollama, and other local AI models
+- **Natural Language Processing**: Advanced NLP for understanding user intent and context
+- **Intelligent Command Generation**: AI-powered command translation with safety validation
+- **Context Awareness**: Maintains conversation context and system state across sessions
+
+### 📊 **Advanced System Monitoring**
+- **Real-time Analytics**: Live system metrics with AI-driven insights
+- **Predictive Analytics**: ML-powered performance prediction and trend analysis
+- **Intelligent Alerts**: LLM-based alert severity assessment and custom alert rules
+- **Unified Dashboard**: Comprehensive system monitoring with AI recommendations
+
+### 🧠 **Machine Learning Integration**
+- **Pattern Recognition**: AI-powered system behavior analysis
+- **Anomaly Detection**: ML-based detection of unusual system patterns
+- **Performance Optimization**: AI-assisted system optimization recommendations
+- **Continuous Learning**: User interaction data improves AI performance over time
+
+### 🔧 **AI-Enhanced Tools**
+- **Smart File Organization**: AI-powered file categorization and sorting
+- **Intelligent Search**: Semantic file search with content understanding
+- **Tool Recommendations**: Context-aware tool suggestions based on system state
+- **Command Correction**: AI-assisted command validation and correction
+
+---
+
+## 🔧 **Technology Stack**
+
+### **Core Framework**
+- **FastAPI**: High-performance async API framework
+- **Python 3.9+**: Modern Python with async/await support
+- **SQLite**: Local database for system knowledge and analytics
 - **WebSocket**: Real-time communication with desktop app
 
-### 📡 **Communication**
+### **AI & ML Integration**
+- **Ollama**: Local AI model serving for Gemma 3n and other models
+- **Gemini API**: Google's Gemini model for enhanced capabilities
+- **scikit-learn**: Machine learning for analytics and pattern recognition
+- **NumPy/Pandas**: Data processing and analysis
+
+### **System Integration**
+- **psutil**: System monitoring and process management
+- **asyncio**: Asynchronous I/O for high performance
+- **rich**: Rich terminal output and user interface
+- **pydantic**: Data validation and settings management
+
+---
+
+## 📡 **Communication**
+
+### **API Endpoints**
 - **REST API**: Standard HTTP endpoints for commands and queries
 - **WebSocket**: Real-time system monitoring and status updates
 - **IPC Bridge**: Secure communication with Electron desktop app
 - **Message Queue**: Asynchronous task processing
 
-### 🛡️ **Security**
-- **Local Processing**: All AI inference runs on-device
+### **LLM Integration**
+- **Local Models**: Gemma 3n via Ollama for privacy and performance
+- **API Models**: Gemini API for enhanced capabilities
+- **Hybrid Mode**: Combine multiple models for optimal performance
+- **Context Management**: Maintain conversation context across sessions
+
+---
+
+## 🛡️ **Security**
+
+### **Multi-layered Protection**
+- **Local Processing**: All AI inference runs on-device for privacy
 - **Data Encryption**: Sensitive data encrypted at rest
 - **Permission Management**: Granular system access control
-- **Audit Logging**: Track all system modifications
+- **Audit Logging**: Comprehensive security event tracking
 
-### 🎯 **Development**
-- **Environment**: Python 3.9+ with virtual environment
-- **Dependencies**: See requirements.txt for full list
-- **Testing**: pytest for unit and integration testing
-- **Documentation**: Auto-generated OpenAPI/Swagger docs
+### **Command Safety**
+- **Sandbox Execution**: Multi-layered command execution protection
+- **Risk Assessment**: AI-powered command risk analysis
+- **Validation**: Comprehensive command validation before execution
+- **Timeout Protection**: Prevents hanging commands
 
-### 🚀 **Getting Started**
+---
+
+## 🎯 **Development**
+
+### **Environment Setup**
 ```bash
-# Set up virtual environment
+# Python 3.9+ with virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
+# Install in development mode
+pip install -e .
+
 # Run the development server
-python main.py
+python -m backend.cli.overseer_cli
 ```
 
-### 📊 **Performance Targets**
-- **Response Time**: < 200ms for common queries
-- **Memory Usage**: < 1GB baseline, < 2GB with AI model
+### **Testing**
+```bash
+# Run comprehensive tests
+python -m pytest tests/
+
+# Test specific features
+python -m backend.cli.overseer_cli --mode testing
+
+# Test LLM integration
+python -m backend.cli.overseer_cli --test-llm
+```
+
+---
+
+## 📊 **Performance Targets**
+
+### **Response Times**
+- **Simple Commands**: < 100ms
+- **Complex Analysis**: < 500ms
+- **AI Processing**: < 2s for complex queries
+- **File Operations**: < 200ms for indexed searches
+
+### **Resource Usage**
+- **Memory**: < 1GB baseline, < 2GB with AI model
+- **CPU**: < 10% for monitoring, < 30% for AI processing
+- **Storage**: < 100MB for core system, < 1GB with full features
+
+### **Scalability**
 - **Concurrent Users**: Support for multiple desktop app instances
 - **Uptime**: 99.9% availability for system monitoring
+- **Data Processing**: Efficient handling of large datasets
 
-The backend service is designed to be the intelligent brain of Overseer, providing powerful AI capabilities while maintaining privacy and performance through local processing.
+---
 
-## Overseer CLI Tool
+## 🧠 **AI Model Integration**
 
-The Overseer CLI tool provides a command-line interface to interact with the Overseer system assistant. It supports two modes:
+### **Supported Models**
+- **Gemma 3n**: Local inference via Ollama (recommended)
+- **Gemini API**: Google's Gemini model via API
+- **Custom Models**: Support for custom fine-tuned models
+- **Hybrid Mode**: Combine multiple models for enhanced performance
 
-- **Local Mode**: Uses a local LLM (e.g., Gemma 3n via Hugging Face Transformers) for inference.
-- **Gemini API Mode**: Uses the Google Gemini API for inference (requires API key).
-
-### Usage
-
+### **Model Configuration**
 ```bash
-# Local mode (requires local model download)
-python -m backend.cli.overseer_cli --mode local --prompt "Find my Python files about machine learning"
+# Configure local model
+overseer --settings --llm-model gemma3n
 
-# Gemini API mode (requires API key)
-python -m backend.cli.overseer_cli --mode gemini --prompt "I need nvidia monitoring tools"
+# Configure API model
+overseer --settings --llm-api-key YOUR_API_KEY
+
+# Test model integration
+overseer --test-llm
 ```
 
-You can also run in interactive mode (REPL) by omitting the --prompt argument.
+---
 
-See `backend/cli/README.md` for more details.
+## 📚 **Documentation**
 
-# Quick CLI Install
+### **CLI Documentation**
+- **[CLI README](cli/README.md)** - Complete CLI feature documentation
+- **[Master Guide](cli/docs/MASTER_GUIDE.md)** - Comprehensive feature guide
+- **[Settings Guide](cli/docs/SETTINGS_GUIDE.md)** - Configuration options
+- **[Security Guide](cli/security/README.md)** - Security features documentation
 
-1. Clone the repo and enter the backend directory:
-   ```bash
-   git clone <repo-url>
-   cd Overseer/backend
-   ```
-2. (Optional) Activate your conda environment:
-   ```bash
-   conda activate <your-env>
-   ```
-3. Run the install script:
-   ```bash
-   bash install_cli.sh
-   ```
-   Or manually:
-   ```bash
-   pip install -r requirements.txt
-   pip install -e .
-   ```
-4. Run the CLI from anywhere:
-   ```bash
-   overseer --mode local --prompt "Find my Python files about machine learning"
-   ```
+### **API Documentation**
+- **OpenAPI/Swagger**: Auto-generated API documentation
+- **WebSocket API**: Real-time communication documentation
+- **Database Schema**: Database structure and relationships
+- **Integration Guide**: Third-party integration documentation
 
-See backend/cli/README.md for more details.
+---
+
+## 🔧 **Configuration**
+
+### **Environment Variables**
+```bash
+export OVERSEER_LLM_MODEL=gemma3n
+export OVERSEER_API_KEY=your_api_key
+export OVERSEER_MODE=local
+export OVERSEER_DB_PATH=/path/to/database
+```
+
+### **Settings Management**
+```bash
+# Access interactive settings
+overseer --settings
+
+# Configure specific features
+overseer --settings --feature llm_advisor
+
+# Export configuration
+overseer --settings --export config.json
+```
+
+---
+
+## 🚀 **Quick Start**
+
+### **Installation**
+```bash
+# Clone and setup
+git clone <repo-url>
+cd Overseer/backend
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -e .
+
+# Run CLI
+overseer --mode local --prompt "Find my Python files about machine learning"
+```
+
+### **Basic Usage**
+```bash
+# Local mode (requires local model download)
+overseer --mode local --prompt "Find my Python files about machine learning"
+
+# Gemini API mode (requires API key)
+overseer --mode gemini --prompt "I need nvidia monitoring tools"
+
+# Interactive mode
+overseer
+```
+
+---
+
+## 🤝 **Contributing**
+
+### **Development Guidelines**
+- **LLM Integration**: All new features should consider AI integration
+- **Testing**: Comprehensive test coverage required
+- **Documentation**: Detailed documentation for all features
+- **Security**: Security review for all system-level features
+
+### **Code Standards**
+- **Type Hints**: Full type annotation for all functions
+- **Error Handling**: Comprehensive error handling and recovery
+- **Logging**: Structured logging for debugging and monitoring
+- **Performance**: Optimize for speed and resource usage
+
+---
+
+The backend service is designed to be the intelligent brain of Overseer, providing powerful AI capabilities while maintaining privacy and performance through local processing and comprehensive LLM integration.

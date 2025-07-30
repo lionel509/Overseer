@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "overseer-cli"
+version = "0.1.0"
+description = "Overseer System Assistant CLI"
+authors = [
+    {name = "Overseer Team"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "transformers>=4.40.0",
+    "rich>=13.0.0",
+    "fuzzywuzzy>=0.18.0",
+    "python-Levenshtein>=0.12.2",
+    "google-generativeai>=0.3.0",
+    "sentence-transformers>=2.0.0",
+    "questionary>=2.0.0",
+    "psutil>=5.9.0",
+]
+
+[project.scripts]
+overseer = "cli.overseer_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cli*", "core*", "db*", "interfaces*", "knowledge*", "modules*", "security*", "utils*", "features*", "inference*", "keygen*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt", "*.json", "*.yaml", "*.yml"] 

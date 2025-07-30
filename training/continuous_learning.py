@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 import sqlite3 as sqlcipher
 
 class ContinuousLearningManager:
-    def __init__(self, db_path: str = "user_interactions_encrypted.db"):
+    def __init__(self, db_path: str = "../backend/db/training_user_interactions.db"):
         self.db_path = db_path
         # self.db_key = os.environ.get('OVERSEER_DB_KEY')
         # if not self.db_key:
