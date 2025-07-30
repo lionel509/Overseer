@@ -9,32 +9,56 @@ try:
 except ImportError:
     questionary = None
 
-from ..db.filesystem_db import get_all_file_embeddings
-
+# Lazy loading for heavy dependencies
 _semantic_model = None
+_sentence_transformers_loaded = False
 
 def get_semantic_model():
-    global _semantic_model
-    if _semantic_model is None:
-        with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
-            progress.add_task(description="Loading semantic search model...", total=None)
-            from sentence_transformers import SentenceTransformer
-            _semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
+    """Lazy load the semantic model only when needed"""
+    global _semantic_model, _sentence_transformers_loaded
+    if _semantic_model is None and not _sentence_transformers_loaded:
+        try:
+            with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
+                progress.add_task(description="Loading semantic search model...", total=None)
+                # Import only when needed
+                from sentence_transformers import SentenceTransformer
+                _semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
+                _sentence_transformers_loaded = True
+        except ImportError:
+            print("Warning: sentence-transformers not available. Semantic search disabled.")
+            _sentence_transformers_loaded = True
+            return None
+        except Exception as e:
+            print(f"Warning: Failed to load semantic model: {e}")
+            _sentence_transformers_loaded = True
+            return None
     return _semantic_model
 
 def semantic_file_search(query: str, top_k: int = 5) -> List[str]:
-    from sentence_transformers import util as st_util
-    file_embs = get_all_file_embeddings()
-    if not file_embs:
-        return []
-    paths, embs = zip(*file_embs)
+    """Semantic file search with lazy loading"""
     model = get_semantic_model()
-    with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
-        progress.add_task(description="Running semantic search...", total=None)
-        query_emb = model.encode(query, convert_to_numpy=True, normalize_embeddings=True)
-        scores = st_util.cos_sim(query_emb, list(embs))[0].cpu().numpy()
-        top_idx = scores.argsort()[-top_k:][::-1]
-    return [paths[i] for i in top_idx if scores[i] > 0.3]  # threshold for relevance
+    if model is None:
+        return []
+    
+    try:
+        # Lazy import database function
+        from ...db.filesystem_db import get_all_file_embeddings
+        from sentence_transformers import util as st_util
+        
+        file_embs = get_all_file_embeddings()
+        if not file_embs:
+            return []
+        paths, embs = zip(*file_embs)
+        
+        with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}")) as progress:
+            progress.add_task(description="Running semantic search...", total=None)
+            query_emb = model.encode(query, convert_to_numpy=True, normalize_embeddings=True)
+            scores = st_util.cos_sim(query_emb, list(embs))[0].cpu().numpy()
+            top_idx = scores.argsort()[-top_k:][::-1]
+        return [paths[i] for i in top_idx if scores[i] > 0.3]  # threshold for relevance
+    except Exception as e:
+        print(f"Semantic search error: {e}")
+        return []
 
 def select_from_list(prompt: str, options: List[str]) -> str:
     if questionary and options:
@@ -54,7 +78,7 @@ def search_files(query: str, root: str = '.', llm_fallback=None, config=None) ->
     # Load config if not provided
     if config is None:
         try:
-            from ..overseer_cli import load_config
+            from ...overseer_cli import load_config
             config = load_config()
         except ImportError:
             config = {}

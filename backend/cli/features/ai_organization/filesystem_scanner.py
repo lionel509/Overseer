@@ -2,7 +2,7 @@ import os
 import argparse
 import time
 import mimetypes
-from ..db.filesystem_db import add_file_info
+from ...db.filesystem_db import add_file_info
 
 try:
     from sentence_transformers import SentenceTransformer

@@ -191,7 +191,7 @@ def test_auto_organize():
     print("=" * 50)
     
     try:
-        from features.auto_organize import auto_organize
+        from features.ai_organization.auto_organize import auto_organize
         
         # Create test directory structure
         test_dir = tempfile.mkdtemp()

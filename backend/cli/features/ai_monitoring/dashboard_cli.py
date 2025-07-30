@@ -62,7 +62,7 @@ Examples:
     parser.add_argument(
         '--version', '-V',
         action='version',
-        version='Overseer Dashboard v1.0.0'
+        version='Overseer Dashboard v26.0.0'
     )
     
     args = parser.parse_args()

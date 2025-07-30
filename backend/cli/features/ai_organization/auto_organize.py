@@ -1,6 +1,6 @@
 import os
 from .folder_sorter import llm_sort_files
-from ..db.filesystem_db import query_file_info
+from ...db.filesystem_db import query_file_info
 
 def improved_llm_sort_files(files, llm_backend, config=None):
     """Improved LLM-based file sorting with better prompts and categorization"""
@@ -99,7 +99,7 @@ def auto_organize(folders, llm_backend, config=None, dry_run=False, confirm_move
     # Load config if not provided
     if config is None:
         try:
-            from ..overseer_cli import load_config
+            from ...overseer_cli import load_config
             config = load_config()
         except ImportError:
             config = {}
