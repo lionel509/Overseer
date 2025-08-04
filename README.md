@@ -22,30 +22,42 @@
 ## 🚀 Key Features
 
 ### 🤖 AI-Powered Core Features
+
 - **LLM Integration**: Direct integration with Gemma 3n, Ollama, and other local AI models
 - **Natural Language Processing**: Advanced NLP for understanding user intent and context
 - **Intelligent Command Generation**: AI-powered command translation with safety validation
 - **Context Awareness**: Maintains conversation context and system state across sessions
 
 ### 📊 Advanced System Monitoring
+
 - **Real-time Analytics**: Live system metrics with AI-driven insights
 - **Predictive Analytics**: ML-powered performance prediction and trend analysis
 - **Intelligent Alerts**: LLM-based alert severity assessment and custom alert rules
 - **Unified Dashboard**: Comprehensive system monitoring with AI recommendations
 
 ### 🧠 Machine Learning Integration
+
 - **Pattern Recognition**: AI-powered system behavior analysis
 - **Anomaly Detection**: ML-based detection of unusual system patterns
 - **Performance Optimization**: AI-assisted system optimization recommendations
 - **Continuous Learning**: User interaction data improves AI performance over time
 
 ### 🔧 AI-Enhanced Tools
+
 - **Smart File Organization**: AI-powered file categorization and sorting
 - **Intelligent Search**: Semantic file search with content understanding
 - **Tool Recommendations**: Context-aware tool suggestions based on system state
 - **Command Correction**: AI-assisted command validation and correction
 
+### 🌐 REST API System
+
+- **FastAPI Framework**: High-performance async REST API with auto-generated documentation
+- **Comprehensive Tool Endpoints**: Full API access to all CLI tools and system features
+- **Real-time WebSocket**: Live system monitoring and status updates
+- **Cross-Platform Integration**: CORS support for web clients and desktop integration
+
 ### 🛡️ Security & Safety
+
 - **Multi-layered Sandbox**: Secure command execution environment
 - **Permission Management**: Granular system access control
 - **Audit Logging**: Comprehensive security event tracking
@@ -73,8 +85,6 @@ Overseer/
 
 ### Installation
 
-**📖 For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md)**
-
 #### Quick Install (Recommended)
 ```bash
 # Clone and install in one go
@@ -87,7 +97,7 @@ pip install -e ./backend/
 ```bash
 git clone https://github.com/your-username/overseer.git
 cd Overseer
-./install.sh
+python install.py
 ```
 
 ### Basic Usage
@@ -104,6 +114,30 @@ overseer
 
 # Desktop app
 cd desktop-app && npm run dev
+
+# REST API server
+cd backend && python -m api.main
+```
+
+### REST API Usage
+
+```bash
+# Start the API server
+cd backend
+python -m api.main
+
+# File search via API
+curl -X POST "http://localhost:8000/api/tools/file-search/search" \
+  -H "Content-Type: application/json" \
+  -d '{"pattern": "*.py", "search_content": true}'
+
+# System monitoring via API
+curl "http://localhost:8000/api/tools/real-time-stats/current"
+
+# Command execution via API
+curl -X POST "http://localhost:8000/api/tools/command-processor/execute" \
+  -H "Content-Type: application/json" \
+  -d '{"command": "system_info"}'
 ```
 
 ### Shell Integration
@@ -232,14 +266,15 @@ The desktop app provides a modern, intuitive interface with:
 
 ### Model Training
 ```bash
-# Train on Apple Silicon Macs
-python training/main_training.py --mac
+# Train on various platforms
+cd training
+./setup.sh
 
-# Resource-efficient training
-python training/main_training.py --resource-efficient
+# Standard training
+python scripts/main_training.py
 
-# CPU-only training
-python training/main_training.py --cpu-only
+# Monitor training progress
+python scripts/memory_monitor.py
 ```
 
 ### Continuous Learning
@@ -253,9 +288,13 @@ python training/main_training.py --cpu-only
 ## 📚 Documentation
 
 - **[CLI Documentation](backend/cli/README.md)** - Complete CLI feature documentation
+- **[Backend API Reference](backend/api/README.md)** - RESTful API endpoints and integration guide
 - **[Desktop App Guide](desktop-app/README.md)** - Desktop application documentation
-- **[Training Guide](training/README_training_flags.md)** - AI model training documentation
-- **[API Reference](backend/README.md)** - Backend API documentation
+- **[Training Guide](training/README.md)** - AI model training and continuous learning
+- **[Backend Service](backend/README.md)** - Core backend architecture and features
+- **[Comprehensive Summary](backend/COMPREHENSIVE_SUMMARY.md)** - Complete system overview
+- **[Features Documentation](backend/cli/FEATURES_DOCUMENTATION.md)** - Complete feature analysis
+- **[ML Integration Guide](backend/cli/features/ai_core/ML_INTEGRATION_GUIDE.md)** - Machine learning integration
 
 ---
 

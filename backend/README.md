@@ -22,7 +22,12 @@ backend/
 │   ├── inference/    # LLM integration (local, Gemini API)
 │   ├── security/     # Security and sandbox systems
 │   ├── db/           # Database and knowledge stores
-│   └── docs/         # Comprehensive documentation
+│   ├── docs/         # Comprehensive documentation
+│   └── tools/        # CLI tools with API endpoints
+├── api/              # REST API server and endpoints
+│   ├── main.py       # FastAPI application server
+│   ├── routes.py     # API endpoint definitions
+│   └── README.md     # API documentation
 ├── core/             # Core AI and system functionality
 ├── modules/          # Feature-specific modules
 ├── interfaces/       # API and communication layers
@@ -90,6 +95,13 @@ backend/
 - **WebSocket**: Real-time system monitoring and status updates
 - **IPC Bridge**: Secure communication with Electron desktop app
 - **Message Queue**: Asynchronous task processing
+
+#### **Core Tool Endpoints**
+- **File Search API**: `/api/tools/file-search/*` - Advanced file search and content discovery
+- **Command Processor API**: `/api/tools/command-processor/*` - System command execution and history
+- **Tool Recommender API**: `/api/tools/tool-recommender/*` - Context-aware tool suggestions
+- **Real-Time Stats API**: `/api/tools/real-time-stats/*` - Live system monitoring and metrics
+- **System Information API**: `/api/system/*` - System health and status endpoints
 
 ### **LLM Integration**
 - **Local Models**: Gemma 3n via Ollama for privacy and performance
