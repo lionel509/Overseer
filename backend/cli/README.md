@@ -62,9 +62,16 @@ python overseer_cli.py --stats
 - `overseer_cli.py` - Main optimized CLI
 - `core/` - Core logic and processing
 - `features/` - Feature modules (AI, monitoring, organization)
+- `tools/` - CLI tools with REST API endpoints
 - `db/` - Database operations
 - `inference/` - LLM integration
 - `utils/` - Utility functions
+
+### **CLI Tools with API Integration**
+- **FileSearchTool** (`tools/file_search_tool.py`) - Advanced file search with REST API endpoints
+- **CommandProcessorTool** (`tools/command_processor_tool.py`) - System command execution with API access
+- **ToolRecommenderTool** (`tools/tool_recommender_tool.py`) - Context-aware recommendations via API
+- **RealTimeStatsTool** (`tools/real_time_stats_tool.py`) - Live system monitoring with WebSocket support
 
 ### **Feature Modules**
 - `ai_core/` - Core AI functionality

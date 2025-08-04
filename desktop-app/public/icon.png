@@ -1,0 +1,12 @@
+# System Tray Icon Placeholder
+# 
+# This file should be replaced with a 16x16 or 32x32 PNG icon
+# for the system tray. The icon should be:
+# - Simple and recognizable
+# - High contrast for visibility
+# - Appropriate for system tray display
+#
+# Recommended size: 16x16 pixels for optimal tray display
+# Format: PNG with transparency support
+#
+# You can create this icon using any image editor or icon generator. 
