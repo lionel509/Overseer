@@ -771,3 +771,226 @@ html {
   transform: translateY(-50%) rotate(90deg);
   transition: all 0.2s ease;
 }
+
+/* File Table Styles - Matching Process Table */
+.file-table-container {
+  background: #16281a;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(34, 139, 87, 0.15);
+  border: none;
+  margin-bottom: 0;
+  margin-top: 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.file-table-container:hover {
+  box-shadow: 0 4px 20px rgba(34, 139, 87, 0.25);
+}
+
+.file-table-wrapper {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+.file-table {
+  width: 100%;
+  min-width: 100%;
+  border-collapse: collapse;
+  background: #1e4023;
+  font-size: 0.875rem;
+  overflow: hidden;
+}
+
+.file-table-header {
+  background: linear-gradient(135deg, #2e8b57 0%, #1e4023 100%);
+  border-bottom: 2px solid #4aff80;
+}
+
+.file-table-header th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: #e6ffe6;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+
+.file-table-header th:last-child {
+  border-right: none;
+}
+
+.file-table-header th::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #4aff80 0%, #b6ffb6 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.file-table-header th:hover::after {
+  opacity: 1;
+}
+
+.file-table-row {
+  border-bottom: 1px solid #2e8b57;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.file-table-row:nth-child(even) {
+  background: #16281a;
+}
+
+.file-table-row:hover {
+  background: linear-gradient(135deg, #2e8b57 0%, #1e4023 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(76, 255, 128, 0.2);
+}
+
+.file-table-row:active {
+  transform: translateY(0);
+}
+
+.file-table-cell {
+  padding: 0.75rem 1rem;
+  color: #e6ffe6;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+.file-table-row:hover .file-table-cell {
+  color: #b6ffb6;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #e6ffe6;
+  font-size: 0.9rem;
+  margin-bottom: 0.25em;
+}
+
+.file-details {
+  font-size: 0.75rem;
+  color: rgba(182, 255, 182, 0.7);
+  font-weight: 400;
+}
+
+.file-modified {
+  color: #b6ffb6;
+  font-weight: 500;
+}
+
+.file-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.file-tag {
+  background: linear-gradient(135deg, #1e4023 0%, #2e8b57 100%);
+  color: #4aff80;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #4aff80;
+  transition: all 0.2s ease;
+}
+
+.file-tag:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.no-tags {
+  color: rgba(182, 255, 182, 0.5);
+  font-style: italic;
+  font-size: 0.7rem;
+}
+
+/* File table sorting indicators - same as process table */
+.file-table-header th.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 2rem !important;
+}
+
+.file-table-header th.sortable:hover {
+  background: rgba(76, 255, 128, 0.15);
+}
+
+.file-table-header th.sortable::before {
+  content: '';
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background-image: url('https://img.icons8.com/?size=100&id=pt5NmADIJkVG&format=png&color=4aff80');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.file-table-header th.sortable:hover::before {
+  opacity: 1;
+}
+
+.file-table-header th.sort-asc::before {
+  background-image: url('https://img.icons8.com/?size=100&id=pt5NmADIJkVG&format=png&color=4aff80');
+  opacity: 1;
+  transform: translateY(-50%) rotate(-90deg);
+  transition: all 0.2s ease;
+}
+
+.file-table-header th.sort-desc::before {
+  background-image: url('https://img.icons8.com/?size=100&id=pt5NmADIJkVG&format=png&color=4aff80');
+  opacity: 1;
+  transform: translateY(-50%) rotate(90deg);
+  transition: all 0.2s ease;
+}
+
+/* File table responsive design */
+@media (max-width: 768px) {
+  .file-table-container {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .file-table-header th {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.7rem;
+  }
+  
+  .file-table-cell {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .file-name {
+    font-size: 0.8rem;
+  }
+  
+  .file-details {
+    font-size: 0.65rem;
+  }
+  
+  .file-tag {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.55rem;
+  }
+}

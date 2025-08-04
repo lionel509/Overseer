@@ -3,18 +3,6 @@ import { Line } from 'react-chartjs-2';
 import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Filler } from 'chart.js';
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale, Tooltip, Filler);
 
-interface SystemMetrics {
-  cpu: number
-  memory: number
-  disk: number
-  network: {
-    upload: number
-    download: number
-  }
-  uptime: string
-  temperature: number
-}
-
 interface ProcessInfo {
   pid: number
   name: string
@@ -134,21 +122,11 @@ const ProcessTable: React.FC<ProcessTableProps> = ({ processes, title }) => {
 };
 
 const SystemDashboard: React.FC = () => {
-  const [metrics, setMetrics] = useState<SystemMetrics>({
-    cpu: 0,
-    memory: 0,
-    disk: 0,
-    network: { upload: 0, download: 0 },
-    uptime: '0 days, 0 hours',
-    temperature: 0
-  })
   const [processes, setProcesses] = useState<ProcessInfo[]>([]);
   const [cpuHistory, setCpuHistory] = useState<number[]>([]);
   const [memoryHistory, setMemoryHistory] = useState<number[]>([]);
   const [diskHistory, setDiskHistory] = useState<number[]>([]);
   const [cpuTimestamps, setCpuTimestamps] = useState<string[]>([]);
-  const [memoryTimestamps, setMemoryTimestamps] = useState<string[]>([]);
-  const [diskTimestamps, setDiskTimestamps] = useState<string[]>([]);
   const cpuChartRef = useRef<any>(null);
 
   // Simulate real-time metrics
@@ -156,31 +134,21 @@ const SystemDashboard: React.FC = () => {
     const interval = setInterval(() => {
       const now = new Date();
       const timeLabel = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      setMetrics(() => {
-        const newMetrics = {
-          cpu: Math.random() * 100,
-          memory: Math.random() * 100,
-          disk: Math.random() * 100,
-          network: {
-            upload: Math.random() * 100,
-            download: Math.random() * 100
-          },
-          uptime: '2 days, 14 hours',
-          temperature: 45 + Math.random() * 20
-        };
-        // Only add new data if timestamp is new for all
-        const lastTimestamp = cpuTimestamps[cpuTimestamps.length - 1];
-        const MAX_POINTS = 60;
-        if (cpuTimestamps.length === 0 || lastTimestamp !== timeLabel) {
-          setCpuTimestamps(t => [...t.slice(-MAX_POINTS + 1), timeLabel]);
-          setMemoryTimestamps(t => [...t.slice(-MAX_POINTS + 1), timeLabel]);
-          setDiskTimestamps(t => [...t.slice(-MAX_POINTS + 1), timeLabel]);
-          setCpuHistory(h => [...h.slice(-MAX_POINTS + 1), newMetrics.cpu]);
-          setMemoryHistory(h => [...h.slice(-MAX_POINTS + 1), newMetrics.memory]);
-          setDiskHistory(h => [...h.slice(-MAX_POINTS + 1), newMetrics.disk]);
-        }
-        return newMetrics;
-      });
+      
+      // Generate new metrics data
+      const newCpuValue = Math.random() * 100;
+      const newMemoryValue = Math.random() * 100;
+      const newDiskValue = Math.random() * 100;
+      
+      // Only add new data if timestamp is new
+      const lastTimestamp = cpuTimestamps[cpuTimestamps.length - 1];
+      const MAX_POINTS = 60;
+      if (cpuTimestamps.length === 0 || lastTimestamp !== timeLabel) {
+        setCpuTimestamps(t => [...t.slice(-MAX_POINTS + 1), timeLabel]);
+        setCpuHistory(h => [...h.slice(-MAX_POINTS + 1), newCpuValue]);
+        setMemoryHistory(h => [...h.slice(-MAX_POINTS + 1), newMemoryValue]);
+        setDiskHistory(h => [...h.slice(-MAX_POINTS + 1), newDiskValue]);
+      }
       
       // Generate mock process data
       const processNames = ['chrome.exe', 'code.exe', 'python.exe', 'node.exe', 'firefox.exe', 'discord.exe', 'spotify.exe', 'teams.exe'];
@@ -198,7 +166,7 @@ const SystemDashboard: React.FC = () => {
       setProcesses(newProcesses);
     }, 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [cpuTimestamps])
 
   const chartOptions = (label: string) => ({
     responsive: true,
@@ -227,24 +195,6 @@ const SystemDashboard: React.FC = () => {
       }
     }
   });
-
-  const MetricCard = ({ title, value, unit, color }: { title: string; value: number; unit: string; color: string }) => (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-      <h3 className="text-base font-semibold text-gray-600 mb-2">{title}</h3>
-      <div className="text-3xl font-bold mb-4" style={{ color }}>
-        {value.toFixed(1)}{unit}
-      </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-        <div 
-          className="h-full rounded-full transition-all duration-300" 
-          style={{ 
-            width: `${Math.min(value, 100)}%`, 
-            backgroundColor: color 
-          }}
-        />
-      </div>
-    </div>
-  )
 
   return (
     <div className="p-8 h-screen overflow-y-auto">
