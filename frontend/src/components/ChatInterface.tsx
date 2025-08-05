@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { sendMessageToAI } from '../api';
 
 interface Message {
   id: string
@@ -122,17 +123,26 @@ You can also use the menu (⋯) for additional options like clearing chat histor
     setInputValue('')
     setIsLoading(true)
 
-    // Simulate API call
-    setTimeout(() => {
+    // Real API call to backend AI
+    try {
+      const res = await sendMessageToAI(inputValue);
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
-        content: `I understand you're asking about: "${inputValue}". This is a simulated response. In a real implementation, this would connect to your Overseer backend.`,
+        content: res.reply || 'No response from AI.',
         timestamp: new Date()
-      }
-      setMessages(prev => [...prev, assistantMessage])
-      setIsLoading(false)
-    }, 1000)
+      };
+      setMessages(prev => [...prev, assistantMessage]);
+    } catch (e) {
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 2).toString(),
+        type: 'assistant',
+        content: 'Error: Unable to get response from AI backend.',
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -145,146 +155,9 @@ You can also use the menu (⋯) for additional options like clearing chat histor
   return (
     <div className="chat-root">
       <div className="chat-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-          <div>
-            <h2 className="chat-title">System Assistant</h2>
-            <p className="chat-desc">Ask me anything about your system</p>
-          </div>
-          <div style={{ position: 'relative' }} ref={menuRef}>
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#b6ffb6',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                padding: '0.5rem',
-                borderRadius: '50%',
-                transition: 'background 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '40px',
-                height: '40px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(76, 255, 128, 0.1)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-              aria-label="Menu"
-            >
-              ⋯
-            </button>
-            {showMenu && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                right: '0',
-                background: '#16281a',
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-                zIndex: 1000,
-                minWidth: '180px',
-                padding: '0.5rem 0'
-              }}>
-                <button
-                  onClick={() => handleMenuAction('clear')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: 'none',
-                    border: 'none',
-                    color: '#e6ffe6',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(76, 255, 128, 0.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                >
-                  🗑️ Clear Chat
-                </button>
-                <button
-                  onClick={() => handleMenuAction('export')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: 'none',
-                    border: 'none',
-                    color: '#e6ffe6',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(76, 255, 128, 0.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                >
-                  📤 Export Chat
-                </button>
-                <button
-                  onClick={() => handleMenuAction('search')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: 'none',
-                    border: 'none',
-                    color: '#e6ffe6',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(76, 255, 128, 0.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                >
-                  🔍 Search Messages
-                </button>
-                <div style={{
-                  height: '1px',
-                  background: '#2e8b57',
-                  margin: '0.5rem 0'
-                }}></div>
-                <button
-                  onClick={() => handleMenuAction('settings')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: 'none',
-                    border: 'none',
-                    color: '#e6ffe6',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(76, 255, 128, 0.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                >
-                  ⚙️ Settings
-                </button>
-                <button
-                  onClick={() => handleMenuAction('help')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    background: 'none',
-                    border: 'none',
-                    color: '#e6ffe6',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    transition: 'background 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(76, 255, 128, 0.1)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                >
-                  ❓ Help
-                </button>
-              </div>
-            )}
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+          <h2 className="chat-title" style={{ textAlign: 'center', width: '100%' }}>System Assistant</h2>
+          <p className="chat-desc" style={{ textAlign: 'center', width: '100%' }}>Ask me anything about your system</p>
         </div>
       </div>
       <div className="chat-messages">
