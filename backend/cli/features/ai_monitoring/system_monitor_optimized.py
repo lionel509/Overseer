@@ -318,7 +318,7 @@ class OptimizedSystemMonitor:
             prompt = self._create_issue_analysis_prompt(stats)
             
             # Get LLM response
-            response = self.llm_backend.run(prompt)
+            response = self.llm_backend(prompt)
             
             # Parse commands from response
             commands = self._parse_llm_commands(response)

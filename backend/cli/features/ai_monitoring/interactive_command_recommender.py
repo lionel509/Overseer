@@ -187,7 +187,7 @@ class InteractiveCommandRecommender:
             prompt = self._create_system_analysis_prompt(system_stats)
             
             # Get LLM response
-            response = self.llm_backend.run(prompt)
+            response = self.llm_backend(prompt)
             
             # Parse LLM response into commands
             commands = self._parse_llm_response(response)

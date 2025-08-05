@@ -229,3 +229,102 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# AI Models and Model Downloads
+# ================================
+# Local AI model directories
+models/
+*/models/
+**/models/
+
+# Hugging Face cache and downloads
+.cache/
+*/.cache/
+**/.cache/
+.huggingface/
+*/.huggingface/
+**/.huggingface/
+
+# PyTorch model files
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.h5
+
+# TensorFlow model files
+*.pb
+*.tflite
+saved_model/
+*/saved_model/
+**/saved_model/
+
+# ONNX model files
+*.onnx
+
+# Pickle and joblib model files
+*.pkl
+*.pickle
+*.joblib
+
+# Model configuration and metadata
+model_config.json
+**/model_config.json
+models.json
+**/models.json
+
+# Overseer-specific model directories
+# User's home directory models (won't be in repo anyway, but for completeness)
+~/.overseer/models/
+*/.overseer/models/
+
+# Training artifacts
+checkpoints/
+*/checkpoints/
+**/checkpoints/
+logs/
+*/logs/
+wandb/
+*/wandb/
+**/wandb/
+tensorboard_logs/
+*/tensorboard_logs/
+**/tensorboard_logs/
+
+# Large training datasets
+datasets/
+*/datasets/
+**/datasets/
+data/large/
+*/data/large/
+**/data/large/
+
+# Compiled model libraries
+*.dll
+*.dylib
+*.so.*
+
+# CUDA/GPU specific files
+*.cubin
+*.fatbin
+*.a
+*.lib
+
+# Model archives
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip
+*model*.zip
+*checkpoint*.zip
+*weights*.zip
+
+# Temporary model files
+*.tmp
+*model*.tmp
+*checkpoint*.tmp
+temp_model/
+*/temp_model/
+**/temp_model/
