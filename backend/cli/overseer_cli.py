@@ -106,6 +106,7 @@ def get_llm_backend(config: Dict) -> Optional[Any]:
         api_key = config.get('gemini_api_key', os.environ.get('GOOGLE_API_KEY'))
         if not api_key:
             console.print('[red]Error: Gemini API key not configured[/red]')
+            console.print('[yellow]Configure with: overseer --settings[/yellow]')
             return None
         
         GeminiAPI_class = get_gemini_api()
@@ -121,9 +122,17 @@ def get_llm_backend(config: Dict) -> Optional[Any]:
             from inference.inference_local import LocalLLM
             model_name = config.get('local_model_name', 'google/gemma-1.1-3b-it')
             LocalLLM._model_name = model_name
-            return LocalLLM().run
+            
+            # Try to initialize the model
+            llm = LocalLLM()
+            return llm.run
+            
         except Exception as e:
             console.print(f'[red]Error loading local LLM: {e}[/red]')
+            console.print('[yellow]💡 Try one of these solutions:[/yellow]')
+            console.print('  • Download models: python -m backend.cli.model_manager setup')
+            console.print('  • Use Gemini API: overseer --settings (set llm_mode to "gemini")')
+            console.print('  • Install dependencies: pip install transformers torch')
             return None
 
 def load_config() -> Dict:

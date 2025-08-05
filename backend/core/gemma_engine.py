@@ -1,5 +1,7 @@
 import os
+import json
 from typing import Optional
+from pathlib import Path
 
 # HuggingFace Transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
@@ -14,7 +16,33 @@ except ImportError:
     service_account = None
 
 # ENV CONFIG
-GEMMA_MODEL_PATH = os.environ.get("GEMMA_MODEL_PATH", "./models/overseer-gemma-3n")
+def _get_model_path():
+    """Get the best available model path"""
+    # First check for downloaded models
+    models_dir = Path.home() / ".overseer" / "models"
+    config_file = Path.home() / ".overseer" / "model_config.json"
+    
+    if config_file.exists():
+        try:
+            with open(config_file, 'r') as f:
+                config = json.load(f)
+            
+            models = config.get("models", {})
+            
+            # Find the first available downloaded model
+            for model_id, model_info in models.items():
+                if model_info.get("status") == "downloaded":
+                    model_path = Path(model_info["path"])
+                    if model_path.exists():
+                        return str(model_path)
+                        
+        except Exception as e:
+            print(f"Error reading model config: {e}")
+    
+    # Fallback to environment variable or default
+    return os.environ.get("GEMMA_MODEL_PATH", "./models/overseer-gemma-3n")
+
+GEMMA_MODEL_PATH = _get_model_path()
 GEMMA_USE_GOOGLE_API = os.environ.get("GEMMA_USE_GOOGLE_API", "false").lower() == "true"
 GEMMA_GOOGLE_PROJECT = os.environ.get("GEMMA_GOOGLE_PROJECT")
 GEMMA_GOOGLE_LOCATION = os.environ.get("GEMMA_GOOGLE_LOCATION", "us-central1")
@@ -29,9 +57,27 @@ _pipe = None
 def _load_local_model():
     global _tokenizer, _model, _pipe
     if _tokenizer is None or _model is None or _pipe is None:
-        _tokenizer = AutoTokenizer.from_pretrained(GEMMA_MODEL_PATH)
-        _model = AutoModelForCausalLM.from_pretrained(GEMMA_MODEL_PATH, torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32)
-        _pipe = pipeline("text-generation", model=_model, tokenizer=_tokenizer, device=0 if torch.cuda.is_available() else -1)
+        try:
+            model_path = _get_model_path()
+            print(f"Loading model from: {model_path}")
+            
+            _tokenizer = AutoTokenizer.from_pretrained(model_path)
+            _model = AutoModelForCausalLM.from_pretrained(
+                model_path, 
+                torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32
+            )
+            _pipe = pipeline(
+                "text-generation", 
+                model=_model, 
+                tokenizer=_tokenizer, 
+                device=0 if torch.cuda.is_available() else -1
+            )
+            print(f"✅ Model loaded successfully from {model_path}")
+            
+        except Exception as e:
+            print(f"❌ Error loading model: {e}")
+            print("📝 Run 'python -m backend.cli.model_manager' to download models")
+            raise
     return _pipe
 
 # Google API inference (placeholder)

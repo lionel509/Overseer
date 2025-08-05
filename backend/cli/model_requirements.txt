@@ -1,0 +1,11 @@
+# Core dependencies for AI model management
+transformers>=4.35.0
+torch>=2.0.0
+huggingface-hub>=0.17.0
+requests>=2.31.0
+rich>=13.0.0
+
+# Optional dependencies for advanced features
+# accelerate>=0.20.0  # For faster model loading
+# bitsandbytes>=0.41.0  # For quantization
+# datasets>=2.14.0  # For training data

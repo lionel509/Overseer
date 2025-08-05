@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Overseer Installation Script
-Installs the Overseer CLI tools and optionally the entire stack
+Installs the Overseer CLI tools and optionally the entire stack with AI models
 """
 
 import subprocess
@@ -42,12 +42,38 @@ def check_pip():
         print(f"❌ Error checking pip: {e}")
         return False
 
+def check_git():
+    """Check if git is available for model downloads"""
+    try:
+        result = subprocess.run(["git", "--version"], capture_output=True, text=True)
+        if result.returncode == 0:
+            print("✅ git is available")
+            return True
+        else:
+            print("❌ git is not available (required for model downloads)")
+            return False
+    except Exception as e:
+        print(f"❌ Error checking git: {e}")
+        return False
+
 def pip_install(package_or_file):
     """Install package or requirements file using pip"""
     try:
         print(f"📦 Installing: {package_or_file}")
         result = subprocess.run([
             sys.executable, "-m", "pip", "install", package_or_file
+        ], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            print(f"✅ Successfully installed: {package_or_file}")
+            return True
+        else:
+            print(f"❌ Failed to install: {package_or_file}")
+            print(f"Error: {result.stderr}")
+            return False
+    except Exception as e:
+        print(f"❌ Error installing {package_or_file}: {e}")
+        return False
         ], capture_output=True, text=True)
         
         if result.returncode == 0:
@@ -69,8 +95,9 @@ def install_cli_only():
     # Core dependencies for CLI tools
     cli_packages = [
         "psutil>=5.9.0",
-        "pathlib2>=2.3.0",
-        "typing-extensions>=4.0.0"
+        "pathlib2>=2.3.0", 
+        "typing-extensions>=4.0.0",
+        "rich>=13.0.0"  # For rich console output
     ]
     
     success_count = 0
@@ -95,6 +122,40 @@ def install_cli_only():
         print("❌ Some packages failed to install. Please check the errors above.")
         return False
 
+def install_ai_models():
+    """Install AI models for local inference"""
+    print("\n🤖 Setting up AI Models...")
+    print("-" * 40)
+    
+    try:
+        # Import model manager
+        sys.path.append(os.path.join(os.path.dirname(__file__), "backend", "cli"))
+        from model_manager import ModelManager
+        
+        # Initialize model manager
+        manager = ModelManager()
+        
+        # Setup models
+        success, models = manager.setup_models_for_installation()
+        
+        if success and models:
+            print(f"✅ Successfully set up {len(models)} AI model(s)")
+            return True
+        elif success and not models:
+            print("ℹ️ No models installed (user choice)")
+            return True
+        else:
+            print("❌ Failed to set up AI models")
+            return False
+            
+    except ImportError as e:
+        print(f"❌ Could not import model manager: {e}")
+        print("📝 AI models can be installed later using: python -m backend.cli.model_manager")
+        return False
+    except Exception as e:
+        print(f"❌ Error setting up AI models: {e}")
+        return False
+
 def install_full_stack():
     """Install the entire Overseer stack"""
     print("\n🚀 Installing Full Overseer Stack...")
@@ -104,7 +165,8 @@ def install_full_stack():
     cli_packages = [
         "psutil>=5.9.0",
         "pathlib2>=2.3.0",
-        "typing-extensions>=4.0.0"
+        "typing-extensions>=4.0.0",
+        "rich>=13.0.0"  # For rich console output
     ]
     
     # API dependencies
@@ -116,12 +178,14 @@ def install_full_stack():
         "requests>=2.31.0"
     ]
     
-    # Desktop app Python dependencies (if any)
-    desktop_packages = [
-        "electron-builder>=24.0.0"  # For building desktop app
+    # AI model dependencies
+    ai_packages = [
+        "transformers>=4.35.0",
+        "torch>=2.0.0",
+        "huggingface-hub>=0.17.0"
     ]
     
-    all_packages = cli_packages + api_packages + desktop_packages
+    all_packages = cli_packages + api_packages + ai_packages
     
     success_count = 0
     total_count = len(all_packages)
@@ -135,23 +199,34 @@ def install_full_stack():
     for package in api_packages:
         if pip_install(package):
             success_count += 1
-    
-    print("\n📦 Installing Desktop app dependencies...")
-    for package in desktop_packages:
+            
+    print("\n📦 Installing AI dependencies...")
+    for package in ai_packages:
         if pip_install(package):
             success_count += 1
     
     print(f"\n📊 Full Stack Installation: {success_count}/{total_count} packages installed")
     
-    if success_count == total_count:
-        print("✅ Full stack installation completed successfully!")
+    if success_count >= total_count * 0.8:  # Allow some failures
+        print("✅ Full stack installation completed!")
+        
+        # Install AI models if git is available
+        if check_git():
+            print("\n🤖 Setting up AI models...")
+            if install_ai_models():
+                print("✅ AI models setup completed!")
+            else:
+                print("⚠️ AI models setup had issues, but can be done later")
+        else:
+            print("\n⚠️ Git not available - AI models can be installed later")
+        
         print("\n🚀 You now have access to:")
         print("  • CLI tools for system management")
         print("  • REST API for programmatic access")
-        print("  • Desktop app for GUI interface")
+        print("  • AI-powered recommendations and analysis")
+        print("  • Local AI models for enhanced functionality")
         print("  • File selector with interactive menus")
         print("  • Real-time system monitoring")
-        print("  • Tool recommendations")
         return True
     else:
         print("❌ Some packages failed to install. Please check the errors above.")
@@ -220,16 +295,18 @@ def show_usage_instructions():
     print("   cd backend/api")
     print("   python main.py --host 0.0.0.0 --port 8000")
     print()
-    print("3. Desktop App:")
-    print("   cd desktop-app")
-    print("   npm install")
-    print("   npm run dev")
+    print("3. AI Models:")
+    print("   python -m backend.cli.model_manager  # Manage AI models")
+    print("   overseer --test-llm                  # Test AI integration")
     print()
     print("4. File Selector Demo:")
     print("   python demo_file_selector.py")
     print()
     print("5. Run Tests:")
     print("   python test_all_tools.py")
+    print()
+    print("6. Model Management:")
+    print("   python -m backend.cli.model_manager  # Add/remove models")
 
 def main():
     """Main installation function"""
@@ -241,14 +318,19 @@ def main():
         print("❌ pip is required for installation")
         sys.exit(1)
     
+    git_available = check_git()
+    if not git_available:
+        print("⚠️ git is not available - AI model downloads will be limited")
+    
     # Show installation options
     print("\n📋 Installation Options:")
     print("1. CLI Tools Only - Basic system management tools")
-    print("2. Full Stack - CLI + API + Desktop App")
+    print("2. Full Stack - CLI + API + AI Models")
+    print("3. AI Models Only - Just download and setup AI models")
     print()
     
     while True:
-        choice = input("Enter your choice (1 or 2): ").strip()
+        choice = input("Enter your choice (1, 2, or 3): ").strip()
         
         if choice == "1":
             print("\n🎯 Installing CLI Tools Only...")
@@ -262,8 +344,16 @@ def main():
                 if test_installation():
                     show_usage_instructions()
             break
+        elif choice == "3":
+            print("\n🤖 Installing AI Models Only...")
+            if git_available and install_ai_models():
+                print("✅ AI models installation completed!")
+                show_usage_instructions()
+            else:
+                print("❌ AI models installation failed or git not available")
+            break
         else:
-            print("❌ Please enter 1 or 2")
+            print("❌ Please enter 1, 2, or 3")
     
     print("\n🎉 Installation completed!")
     print("Thank you for choosing Overseer!")
