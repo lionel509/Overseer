@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react';
 import { sendMessageToAI } from '../api';
+import { useAuthInfo } from '@propelauth/react';
 
 interface Message {
   id: string
@@ -109,23 +110,38 @@ You can also use the menu (⋯) for additional options like clearing chat histor
     }
   }
 
+  const { accessToken } = useAuthInfo();
+
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return
+    if (!inputValue.trim()) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       type: 'user',
       content: inputValue,
       timestamp: new Date()
-    }
+    };
 
-    setMessages(prev => [...prev, userMessage])
-    setInputValue('')
-    setIsLoading(true)
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
 
-    // Real API call to backend AI
     try {
-      const res = await sendMessageToAI(inputValue);
+      let res;
+      if (inputValue.trim().startsWith('sudo') || inputValue.trim().startsWith('run as root')) {
+        res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {})
+          },
+          body: JSON.stringify({ message: inputValue })
+        });
+        if (!res.ok) throw new Error('Failed to run sudo command');
+        res = await res.json();
+      } else {
+        res = await sendMessageToAI(inputValue);
+      }
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
@@ -143,7 +159,7 @@ You can also use the menu (⋯) for additional options like clearing chat histor
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
