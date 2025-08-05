@@ -1,9 +1,5 @@
-// src/api.ts
-// Simple API utility for backend communication
-
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
-// Send a message to the backend AI and get a response
 export async function sendMessageToAI(message: string) {
   const res = await fetch(`${API_BASE}/chat`, {
     method: 'POST',
@@ -11,7 +7,7 @@ export async function sendMessageToAI(message: string) {
     body: JSON.stringify({ message })
   });
   if (!res.ok) throw new Error('Failed to get AI response');
-  return res.json(); // Expecting { reply: string }
+  return res.json();
 }
 
 export async function fetchFiles() {
