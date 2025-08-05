@@ -14,8 +14,20 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
       height={24}
       style={{ marginRight: 12 }}
     />},
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'files', label: 'Files', icon: '📁' }
+    { id: 'dashboard', label: 'Dashboard', icon: <img
+      src="https://img.icons8.com/?size=100&id=uWyVYfqqdYxW&format=png&color=018141"
+      alt="Dashboard"
+      width={24}
+      height={24}
+      style={{ marginRight: 12 }}
+    />},
+    { id: 'files', label: 'Files', icon: <img
+      src="https://img.icons8.com/?size=100&id=83170&format=png&color=018141"
+      alt="Files"
+      width={24}
+      height={24}
+      style={{ marginRight: 12 }}
+    />}
   ]
 
   return (

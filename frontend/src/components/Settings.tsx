@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Add index signature to allow string keys
 interface SettingsState {
@@ -108,8 +108,34 @@ const Settings: React.FC = () => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  useEffect(() => {
+    // Inject global scrollbar CSS for all components
+    const style = document.createElement('style');
+    style.innerHTML = `
+      /* Reduce scrollbar width globally */
+      ::-webkit-scrollbar {
+        width: 7px;
+        height: 7px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #2e4a36;
+        border-radius: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #16281a;
+      }
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: #2e4a36 #16281a;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
   return (
-    <div className="card" style={{ maxWidth: 720, margin: '2em auto', textAlign: 'center' }}>
+    <div className="card" style={{ maxWidth: 720, margin: '2em auto', textAlign: 'center', height: 'auto', minHeight: 0 }}>
       <style>{`
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
@@ -147,7 +173,7 @@ const Settings: React.FC = () => {
           </button>
         ))}
       </div>
-      <div style={{ textAlign: 'left', minHeight: 220, height: 220 }}>
+      <div style={{ textAlign: 'left' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {settingsTabs[activeTab].settings.map(s => {
             if (s.key === 'timeout_settings') {
@@ -166,7 +192,7 @@ const Settings: React.FC = () => {
                           const vals = [e.target.value, read || '', write || ''];
                           handleChange('timeout_settings', vals.join(','));
                         }}
-                        style={{ width: '100%', fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1px solid var(--accent-color)', background: 'var(--accent-bg-light)', color: '#e6ffe6', marginBottom: 2, MozAppearance: 'textfield' }}
+                        style={{ width: '100%', fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1.5px solid #4aff80', background: 'var(--accent-bg-light)', color: '#e6ffe6', marginBottom: 2, MozAppearance: 'textfield' }}
                         inputMode="numeric"
                         pattern="[0-9]*"
                         onWheel={e => e.currentTarget.blur()}
@@ -181,8 +207,7 @@ const Settings: React.FC = () => {
                         onChange={e => {
                           const vals = [connect || '', e.target.value, write || ''];
                           handleChange('timeout_settings', vals.join(','));
-                        }}
-                        style={{ width: '100%', fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1px solid var(--accent-color)', background: 'var(--accent-bg-light)', color: '#e6ffe6', marginBottom: 2, MozAppearance: 'textfield' }}
+                        }}         style={{ width: '100%', fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1.5px solid #4aff80', background: 'var(--accent-bg-light)', color: '#e6ffe6', marginBottom: 2, MozAppearance: 'textfield' }}
                         inputMode="numeric"
                         pattern="[0-9]*"
                         onWheel={e => e.currentTarget.blur()}
@@ -198,7 +223,7 @@ const Settings: React.FC = () => {
                           const vals = [connect || '', read || '', e.target.value];
                           handleChange('timeout_settings', vals.join(','));
                         }}
-                        style={{ width: '100%', fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1px solid var(--accent-color)', background: 'var(--accent-bg-light)', color: '#e6ffe6', marginBottom: 2, MozAppearance: 'textfield' }}
+                        style={{ width: '100%', fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1.5px solid #4aff80', background: 'var(--accent-bg-light)', color: '#e6ffe6', marginBottom: 2, MozAppearance: 'textfield' }}
                         inputMode="numeric"
                         pattern="[0-9]*"
                         onWheel={e => e.currentTarget.blur()}
@@ -239,8 +264,8 @@ const Settings: React.FC = () => {
                             width: 22,
                             height: 22,
                             borderRadius: 4,
-                            border: '2px solid var(--accent-color)',
-                            background: !!settings[s.key] ? 'var(--accent-color)' : 'transparent',
+                            border: '2px solid #4aff80',
+                            background: !!settings[s.key] ? '#4aff80' : 'transparent',
                             boxSizing: 'border-box',
                             cursor: 'pointer',
                             transition: 'background 0.2s, border 0.2s',
@@ -258,7 +283,7 @@ const Settings: React.FC = () => {
                         step={s.type === 'float' ? '0.01' : undefined}
                         value={settings[s.key] as string | number}
                         onChange={e => handleChange(s.key, s.type === 'int' ? parseInt(e.target.value) : s.type === 'float' ? parseFloat(e.target.value) : e.target.value)}
-                        style={{ width: '100%', minWidth: 180, fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1px solid var(--accent-color)', background: 'var(--accent-bg-light)', color: '#e6ffe6', verticalAlign: 'baseline', marginBottom: 2, MozAppearance: 'textfield' }}
+                        style={{ width: '100%', minWidth: 180, fontFamily: 'monospace', fontSize: '1rem', padding: '0.4em 0.7em', borderRadius: 6, border: '1.5px solid #4aff80', background: 'var(--accent-bg-light)', color: '#e6ffe6', verticalAlign: 'baseline', marginBottom: 2, MozAppearance: 'textfield' }}
                         inputMode={s.type === 'int' || s.type === 'float' ? 'numeric' : undefined}
                         pattern={s.type === 'int' || s.type === 'float' ? '[0-9]*' : undefined}
                         onWheel={e => e.currentTarget.blur()}
