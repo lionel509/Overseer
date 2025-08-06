@@ -1,6 +1,19 @@
 import os
-from .folder_sorter import llm_sort_files
-from ...db.filesystem_db import query_file_info
+try:
+    from features.ai_organization.folder_sorter import llm_sort_files
+except ImportError:
+    try:
+        from .folder_sorter import llm_sort_files
+    except ImportError:
+        llm_sort_files = None
+
+try:
+    from db.filesystem_db import query_file_info
+except ImportError:
+    try:
+        from ...db.filesystem_db import query_file_info
+    except ImportError:
+        query_file_info = None
 
 def improved_llm_sort_files(files, llm_backend, config=None):
     """Improved LLM-based file sorting with better prompts and categorization"""

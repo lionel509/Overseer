@@ -186,6 +186,21 @@ class OverseerDesktop {
   }
 
   private setupIPC(): void {
+    // Add this new handler
+    ipcMain.handle('run-command', async (event, args) => {
+      const { feature, prompt, path: featurePath, action } = args;
+      const scriptPath = path.join(__dirname, '../../backend/cli/overseer_cli.py');
+      const pythonPath = this.getPythonPath();
+
+      const commandArgs = [scriptPath];
+      if (feature) commandArgs.push('--feature', feature);
+      if (prompt) commandArgs.push('--prompt', prompt);
+      if (featurePath) commandArgs.push('--path', featurePath);
+      if (action) commandArgs.push('--action', action);
+
+      return this.spawnProcess(pythonPath, commandArgs);
+    });
+
     // Python backend communication
     ipcMain.handle('python:execute', async (event, command: string, args: any[] = []) => {
       return this.executePythonCommand(command, args)

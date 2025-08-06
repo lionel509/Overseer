@@ -72,7 +72,7 @@ def get_sort_folder():
 
 def get_auto_organize():
     """Lazy load auto organize"""
-    return lazy_import('features.ai_organization.auto_organize', 'auto_organize')
+    return lazy_import('features.ai_organization.simple_auto_organize', 'auto_organize')
 
 def get_db_functions():
     """Lazy load database functions"""
@@ -164,6 +164,20 @@ def is_basic_command(user_input: str) -> bool:
     ]
     
     first_word = user_input.split()[0].lower()
+    
+    # Special handling for 'find' - only treat as basic command if it looks like a proper find command
+    if first_word == 'find':
+        # If it contains natural language words, it's likely an AI prompt
+        natural_language_indicators = ['about', 'files', 'containing', 'related to', 'with', 'that have']
+        user_lower = user_input.lower()
+        if any(indicator in user_lower for indicator in natural_language_indicators):
+            return False
+        # If it doesn't start with typical find patterns, it's likely an AI prompt
+        find_patterns = ['-name', '-type', '-size', '-mtime', '-exec', '/', '.']
+        words = user_input.split()[1:]  # Skip 'find'
+        if words and not any(word.startswith(pattern) or pattern in word for pattern in find_patterns for word in words):
+            return False
+    
     return first_word in basic_commands
 
 def is_system_command(user_input: str) -> bool:
@@ -367,27 +381,79 @@ def handle_ai_mode(user_input: str) -> None:
     else:
         console.print("[red]Error: Failed to load AI processing[/red]")
 
+def get_llm_advisor():
+    """Lazy load LLM advisor"""
+    return lazy_import('features.ai_core.simple_llm_advisor', 'LLMAdvisor')
+
+def get_performance_optimizer():
+    """Lazy load performance optimizer"""
+    return lazy_import('features.ai_performance.performance_optimizer', 'PerformanceOptimizer')
+
+def get_command_corrector():
+    """Lazy load command corrector"""
+    return lazy_import('features.ai_organization.simple_command_corrector', 'CommandCorrector')
+
 def main() -> int:
     """Main optimized CLI function"""
     parser = argparse.ArgumentParser(description='Overseer Optimized CLI')
     parser.add_argument('--version', action='store_true', help='Show version')
     parser.add_argument('--stats', action='store_true', help='Show performance stats')
-    parser.add_argument('--ai', action='store_true', help='Force AI mode')
-    
-    args, unknown = parser.parse_known_args()
-    
+    parser.add_argument('--prompt', type=str, help='Run a prompt directly')
+    parser.add_argument('--mode', type=str, default='local', help='LLM mode (local or gemini)')
+    parser.add_argument('--feature', type=str, help='Run a specific feature (e.g., auto_organize, llm_advisor)')
+    parser.add_argument('--path', type=str, help='Path for feature (e.g., for auto_organize)')
+    parser.add_argument('--action', type=str, help='Action for feature (e.g., for performance_optimizer)')
+
+    args = parser.parse_args()
+
     if args.version:
         console.print("Overseer v26.0.0 (Optimized)")
         return 0
-    
+
     if args.stats:
         show_performance_stats()
         return 0
-    
-    # Load config
+
     config = load_config()
-    
-    # Interactive mode
+
+    # Feature-based execution
+    if args.feature:
+        if args.feature == 'auto_organize' and args.path:
+            auto_organize = get_auto_organize()
+            if auto_organize:
+                auto_organize(args.path)
+        elif args.feature == 'llm_advisor' and args.prompt:
+            LLMAdvisor = get_llm_advisor()
+            if LLMAdvisor:
+                advisor = LLMAdvisor()
+                advisor.run_once(args.prompt)
+        elif args.feature == 'performance_optimizer' and args.action:
+            PerformanceOptimizer = get_performance_optimizer()
+            if PerformanceOptimizer:
+                optimizer = PerformanceOptimizer()
+                optimizer.run_once(args.action)
+        elif args.feature == 'command_corrector' and args.prompt:
+            CommandCorrector = get_command_corrector()
+            if CommandCorrector:
+                corrector = CommandCorrector()
+                corrected_command = corrector.correct(args.prompt)
+                console.print(f"[green]Corrected Command:[/] {corrected_command}")
+        else:
+            console.print(f"[red]Invalid feature or missing arguments for feature: {args.feature}[/red]")
+        return 0
+
+    # Prompt-based execution (if no feature is specified)
+    if args.prompt:
+        user_input = args.prompt
+        if is_basic_command(user_input):
+            execute_basic_command(user_input)
+        elif is_system_command(user_input):
+            handle_system_monitoring(user_input)
+        else:
+            handle_ai_mode(user_input)
+        return 0
+
+    # Interactive mode (if no feature or prompt)
     console.print("[bold cyan]Overseer Optimized CLI[/bold cyan]")
     console.print("Type 'help' for commands, 'exit' to quit")
     
