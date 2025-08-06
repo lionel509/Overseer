@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import ChatInterface from './components/ChatInterface'
-import SystemDashboard from './components/SystemDashboard'
-import FileManager from './components/FileManager'
-import Sidebar from './components/Sidebar'
-import Settings from './components/Settings'
+import { useState } from 'react';
+import ChatInterface from './components/ChatInterface';
+import SystemDashboard from './components/SystemDashboard';
+import FileManager from './components/FileManager';
+import Sidebar from './components/Sidebar';
+import Settings from './components/Settings';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('chat')
-  const [showSettings, setShowSettings] = useState(false)
+  const [activeTab, setActiveTab] = useState('chat');
+  const [showSettings, setShowSettings] = useState(false);
 
   return (
     <div className="app-container">
@@ -19,7 +19,6 @@ function App() {
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             onClick={() => setShowSettings(true)}
           >
-            {/* Settings icon from icons8 */}
             <img
               src="https://img.icons8.com/?size=100&id=2969&format=png&color=018141"
               alt="Settings"
@@ -76,7 +75,7 @@ function App() {
         )}
       </main>
     </div>
-  )
+  );
 }
 
 export default App

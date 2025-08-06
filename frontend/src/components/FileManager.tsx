@@ -1,4 +1,7 @@
-import React, { useState, useMemo } from 'react'
+import { useEffect } from 'react';
+import { fetchFiles, addTag as apiAddTag, removeTag as apiRemoveTag, moveFile as apiMoveFile, deleteFile as apiDeleteFile } from '../api';
+import React, { useState, useMemo, useRef } from 'react'
+import { createPortal } from 'react-dom';
 
 interface FileItem {
   id: string
@@ -14,24 +17,24 @@ interface FileItem {
   owner?: string
 }
 
+
 const FileManager: React.FC = () => {
-  const [files, setFiles] = useState<FileItem[]>([
-    { id: '1', name: 'Documents', type: 'directory', size: '-', modified: '2024-01-15 10:30', path: '/home/user/Documents', category: 'folder', permissions: 'drwxr-xr-x', owner: 'user' },
-    { id: '2', name: 'Downloads', type: 'directory', size: '-', modified: '2024-01-14 14:20', path: '/home/user/Downloads', category: 'folder', permissions: 'drwxr-xr-x', owner: 'user' },
-    { id: '3', name: 'report.pdf', type: 'file', size: '2.3 MB', modified: '2024-01-13 09:15', path: '/home/user/report.pdf', extension: 'pdf', category: 'document', tags: ['work', 'important'], permissions: '-rw-r--r--', owner: 'user' },
-    { id: '4', name: 'config.json', type: 'file', size: '1.2 KB', modified: '2024-01-12 16:45', path: '/home/user/config.json', extension: 'json', category: 'config', permissions: '-rw-r--r--', owner: 'user' },
-    { id: '5', name: 'backup.tar.gz', type: 'file', size: '45.7 MB', modified: '2024-01-11 08:30', path: '/home/user/backup.tar.gz', extension: 'tar.gz', category: 'archive', permissions: '-rw-r--r--', owner: 'user' },
-    { id: '6', name: 'main.py', type: 'file', size: '3.4 KB', modified: '2024-01-10 13:22', path: '/home/user/main.py', extension: 'py', category: 'code', tags: ['python'], permissions: '-rwxr-xr-x', owner: 'user' },
-    { id: '7', name: 'script.js', type: 'file', size: '2.1 KB', modified: '2024-01-09 11:10', path: '/home/user/script.js', extension: 'js', category: 'code', permissions: '-rw-r--r--', owner: 'user' },
-    { id: '8', name: 'image.png', type: 'file', size: '1.8 MB', modified: '2024-01-08 15:55', path: '/home/user/image.png', extension: 'png', category: 'image', permissions: '-rw-r--r--', owner: 'user' },
-    { id: '9', name: 'video.mp4', type: 'file', size: '15.6 MB', modified: '2024-01-07 12:00', path: '/home/user/video.mp4', extension: 'mp4', category: 'media', permissions: '-rw-r--r--', owner: 'user' },
-    { id: '10', name: 'archive.zip', type: 'file', size: '8.9 MB', modified: '2024-01-06 18:30', path: '/home/user/archive.zip', extension: 'zip', category: 'archive', permissions: '-rw-r--r--', owner: 'user' }
-  ])
+  const actionBtnRefs = useRef<{ [id: string]: HTMLButtonElement | null }>({});
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
+  const [files, setFiles] = useState<FileItem[]>([])
+  // Fetch files from backend on mount
+  useEffect(() => {
+    fetchFiles().then(setFiles).catch(() => {
+      // fallback or error handling
+    });
+  }, []);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<'name' | 'type' | 'size' | 'modified'>('name')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null)
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   // Filter and sort files
   const filteredAndSortedFiles = useMemo(() => {
@@ -85,8 +88,10 @@ const FileManager: React.FC = () => {
   }
 
   const handleFileClick = (file: FileItem) => {
-    setSelectedFile(file)
-    setShowSidebar(true)
+    if (file.type === 'file') {
+      setSelectedFile(file)
+      setShowSidebar(true)
+    }
   }
 
   const getFileIcon = (file: FileItem) => {
@@ -103,23 +108,144 @@ const FileManager: React.FC = () => {
     }
   }
 
+  // Dropdown menu action handlers
+  const handleShowDetails = (file: FileItem) => {
+    setSelectedFile(file);
+    setShowDetailsModal(true);
+    setOpenMenuId(null);
+    setDropdownPos(null);
+  };
+
+  const handleAddTag = async (file: FileItem) => {
+    setOpenMenuId(null);
+    setDropdownPos(null);
+    let tag = '';
+    if (typeof window !== 'undefined' && window.prompt) {
+      tag = window.prompt('Enter the name of the tag to add:') || '';
+    }
+    tag = tag.trim();
+    if (!tag) {
+      if (typeof window !== 'undefined' && window.alert) {
+        window.alert('Tag cannot be empty.');
+      }
+      return;
+    }
+    try {
+      await apiAddTag(file.id, tag);
+      // Refresh file list
+      const updated = await fetchFiles();
+      setFiles(updated);
+    } catch (e) {
+      window.alert('Failed to add tag.');
+    }
+  };
+
+  const handleRemoveTag = async (file: FileItem) => {
+    setOpenMenuId(null);
+    setDropdownPos(null);
+    if (!file.tags || file.tags.length === 0) {
+      if (typeof window !== 'undefined' && window.alert) {
+        window.alert('No tags to remove.');
+      }
+      return;
+    }
+    let tag = '';
+    if (typeof window !== 'undefined' && window.prompt) {
+      tag = window.prompt('Enter the name of the tag to remove:') || '';
+    }
+    tag = tag.trim();
+    if (!tag) {
+      return;
+    }
+    if (!file.tags.includes(tag)) {
+      if (typeof window !== 'undefined' && window.alert) {
+        window.alert('Tag not found on this file.');
+      }
+      return;
+    }
+    try {
+      await apiRemoveTag(file.id, tag);
+      const updated = await fetchFiles();
+      setFiles(updated);
+    } catch (e) {
+      window.alert('Failed to remove tag.');
+    }
+  };
+
+  const handleMoveFile = async (file: FileItem) => {
+    const newPath = prompt('Enter new path:', file.path);
+    if (newPath && newPath !== file.path) {
+      try {
+        await apiMoveFile(file.id, newPath);
+        const updated = await fetchFiles();
+        setFiles(updated);
+      } catch (e) {
+        window.alert('Failed to move file.');
+      }
+    }
+    setOpenMenuId(null);
+    setDropdownPos(null);
+  };
+
+  const handleDeleteFile = async (file: FileItem) => {
+    if (window.confirm('Are you sure you want to delete this file?')) {
+      try {
+        await apiDeleteFile(file.id);
+        const updated = await fetchFiles();
+        setFiles(updated);
+      } catch (e) {
+        window.alert('Failed to delete file.');
+      }
+    }
+    setOpenMenuId(null);
+    setDropdownPos(null);
+  };
+
   return (
     <div className="flex h-screen bg-gray-50">
+      {/* Details Modal */}
+      {showDetailsModal && selectedFile && (
+        <div className="file-details-modal-bg">
+          <div className="file-details-modal">
+            <button
+              className="close-btn"
+              onClick={() => setShowDetailsModal(false)}
+              title="Close"
+            >
+              ×
+            </button>
+            <h2>File Details</h2>
+            <div className="space-y-1">
+              <div><b>Name:</b> {selectedFile.name}</div>
+              <div><b>Type:</b> {selectedFile.type}</div>
+              <div><b>Size:</b> {selectedFile.size}</div>
+              <div><b>Modified:</b> {selectedFile.modified}</div>
+              <div><b>Path:</b> {selectedFile.path}</div>
+              {selectedFile.extension && <div><b>Extension:</b> {selectedFile.extension}</div>}
+              {selectedFile.category && <div><b>Category:</b> {selectedFile.category}</div>}
+              {selectedFile.permissions && <div><b>Permissions:</b> {selectedFile.permissions}</div>}
+              {selectedFile.owner && <div><b>Owner:</b> {selectedFile.owner}</div>}
+              <div><b>Tags:</b> {selectedFile.tags && selectedFile.tags.length > 0 ? selectedFile.tags.join(', ') : 'No tags'}</div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Main Content */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${showSidebar ? 'mr-80' : ''}`}>
         
         {/* Header */}
         <div className="bg-white border-b border-gray-200 p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-800">File Manager</h1>
-            <input
-              type="text"
-              placeholder="Search files..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-            />
-          </div>
+          <h1 className="text-2xl font-bold text-gray-800">File Manager</h1>
+        </div>
+        {/* Search Bar above table, right-aligned */}
+        <div className="w-full bg-white px-4 pt-4 pb-2 border-b border-gray-200 flex">
+          <input
+            type="text"
+            placeholder="Search files..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 ml-auto"
+          />
         </div>
 
         {/* File Table */}
@@ -134,9 +260,6 @@ const FileManager: React.FC = () => {
                       onClick={() => handleSort('name')}
                     >
                       File Name
-                      {sortBy === 'name' && (
-                        <span className="sort-indicator">{sortOrder === 'asc' ? '↑' : '↓'}</span>
-                      )}
                     </th>
                     <th 
                       className="sortable cursor-pointer"
@@ -148,12 +271,14 @@ const FileManager: React.FC = () => {
                       )}
                     </th>
                     <th>Tags</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredAndSortedFiles.map((file) => (
                     <tr 
                       key={file.id}
+                      data-row-id={file.id}
                       className={`file-table-row cursor-pointer ${
                         selectedFile?.id === file.id ? 'selected' : ''
                       }`}
@@ -196,6 +321,67 @@ const FileManager: React.FC = () => {
                           )}
                         </div>
                       </td>
+                      <td className="file-table-cell text-right" style={{ position: 'relative', zIndex: 100 }}>
+                        <div className="relative flex justify-end">
+                          <button
+                            className="file-action-menu-trigger"
+                            title="Actions"
+                            ref={el => { actionBtnRefs.current[file.id] = el; }}
+                            onClick={e => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              if (openMenuId === file.id) {
+                                setOpenMenuId(null);
+                                setDropdownPos(null);
+                              } else {
+                                setOpenMenuId(file.id);
+                                // Use ref if available, else event.currentTarget
+                                let btn = actionBtnRefs.current[file.id] || (e.currentTarget as HTMLButtonElement);
+                                const rect = btn.getBoundingClientRect();
+                                setDropdownPos({
+                                  top: rect.bottom + window.scrollY + 4,
+                                  left: rect.right + window.scrollX - 180
+                                });
+                              }
+                            }}
+                          >
+                            <span style={{ fontSize: 22, fontWeight: 'bold', lineHeight: 1 }}>⋮</span>
+                          </button>
+      {/* Portal dropdown menu so it is never clipped */}
+      {openMenuId && dropdownPos && (() => {
+        const file = files.find(f => f.id === openMenuId);
+        if (!file) return null;
+        return createPortal(
+          <div
+            className="file-action-menu"
+            style={{
+              position: 'absolute',
+              zIndex: 9999,
+              top: dropdownPos.top,
+              left: dropdownPos.left,
+              minWidth: 148,
+              maxWidth: 180,
+              background: '#16281a',
+              borderRadius: '0.7rem',
+              boxShadow: '0 6px 18px 0 rgba(34,139,87,0.18)',
+              border: '1px solid #2e8b57',
+              padding: '0.15em 0',
+            }}
+            onMouseDown={e => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
+          >
+            <button className="text-blue-600" onClick={e => { e.stopPropagation(); handleShowDetails(file); }}>Show Details</button>
+            <button className="text-green-600" onClick={e => { e.stopPropagation(); handleAddTag(file); }}>Add Tag</button>
+            <button className="text-yellow-600" onClick={e => { e.stopPropagation(); handleRemoveTag(file); }}>Remove Tag</button>
+            <button className="text-purple-600" onClick={e => { e.stopPropagation(); handleMoveFile(file); }}>Move File</button>
+            <button className="text-red-600" onClick={e => { e.stopPropagation(); handleDeleteFile(file); }}>Delete File</button>
+          </div>,
+          document.body
+        );
+      })()}
+                        </div>
+                      </td>
+
                     </tr>
                   ))}
                 </tbody>
@@ -204,62 +390,8 @@ const FileManager: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Sidebar */}
-      {showSidebar && selectedFile && (
-        <div className="fixed right-0 top-0 h-full w-80 bg-white border-l border-gray-200 z-10 overflow-y-auto shadow-lg">
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">File Details</h3>
-              <button
-                onClick={() => setShowSidebar(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <p className="text-gray-900">{selectedFile.name}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Type</label>
-                <p className="text-gray-900">{selectedFile.type}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Size</label>
-                <p className="text-gray-900">{selectedFile.size}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Modified</label>
-                <p className="text-gray-900">{selectedFile.modified}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Path</label>
-                <p className="text-gray-900 break-all">{selectedFile.path}</p>
-              </div>
-              {selectedFile.tags && selectedFile.tags.length > 0 && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Tags</label>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {selectedFile.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
 
-export default FileManager 
+export default FileManager
