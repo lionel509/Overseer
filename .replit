@@ -1,0 +1,9 @@
+modules = ["nodejs-20", "web", "bash", "python-3.12"]
+run = "uvicorn undefined:app --host 0.0.0.0 --port 3000"
+
+[nix]
+channel = "stable-25_05"
+packages = ["glibcLocales", "libxcrypt", "python313Packages.conda"]
+
+[deployment]
+run = ["sh", "-c", "uvicorn undefined:app --host 0.0.0.0 --port 3000"]
