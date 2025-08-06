@@ -1,0 +1,18 @@
+run = "python3 demo_main.py"
+modules = ["python-3.11"]
+
+[env]
+DEMO_MODE = "true"
+ENVIRONMENT = "demo"
+PORT = "8000"
+
+[nix]
+channel = "stable-22.11"
+
+[deployment]
+run = ["python3", "demo_main.py"]
+deploymentTarget = "cloudrun"
+
+[ports]
+[ports.8000]
+externalPort = 80
