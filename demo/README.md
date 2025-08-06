@@ -4,16 +4,32 @@ This directory contains a self-running demo of the Overseer CLI.
 
 ## How to Run the Demo
 
-To run the demo, simply execute the `run_demo.sh` script from the root of the project:
+There are two versions of the demo available:
+
+### 1. Standard Demo
+
+This demo shows the user-facing experience of the Overseer CLI.
+
+To run the standard demo, execute the following command from the root of the project:
 
 ```bash
 bash demo/run_demo.sh
 ```
 
-This will:
+### 2. Demo with LLM Output
+
+This demo provides a "behind-the-scenes" look at the AI's reasoning process.
+
+To run this version, execute:
+
+```bash
+bash demo/run_demo_with_llm.sh
+```
+
+Both scripts will:
 
 1.  **Start Recording:** The `script` command will start recording the terminal session.
-2.  **Run the Demo:** The `demo_script.py` will be executed, which will print a step-by-step walkthrough of the Overseer CLI's features.
-3.  **Save the Recording:** The recording will be saved to `demo/output/demo_session.log`.
+2.  **Run the Demo:** The corresponding Python script will be executed.
+3.  **Save the Recording:** The recording will be saved in the `demo/output/` directory.
 
 You can then view the recording to see the full demo.
