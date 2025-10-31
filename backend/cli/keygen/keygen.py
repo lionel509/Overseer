@@ -37,6 +37,8 @@ def main():
     key_path = os.path.join(save_dir, 'overseer_db_key.txt')
     with open(key_path, 'w') as f:
         f.write(key)
+    # Set secure file permissions (owner read/write only)
+    os.chmod(key_path, 0o600)
     print(f"[Overseer] Encryption key saved to: {key_path}")
     print("[IMPORTANT] Keep this key safe! You will need it to access your encrypted Overseer data.")
     print("To use Overseer, set the environment variable OVERSEER_DB_KEY to the value in this file.")

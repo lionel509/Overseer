@@ -73,13 +73,16 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Add CORS middleware
+# Add CORS middleware with secure defaults
+# For production, configure OVERSEER_ALLOWED_ORIGINS environment variable
+# Example: OVERSEER_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+allowed_origins = os.environ.get('OVERSEER_ALLOWED_ORIGINS', 'http://localhost:5173,http://localhost:3000').split(',')
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=allowed_origins,  # Restricted origins for security
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Explicit methods
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],  # Explicit headers
 )
 
 # Global exception handler

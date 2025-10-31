@@ -233,16 +233,26 @@ overseer --feature llm_advisor --prompt "My system is slow"
 ## 🛡️ Security Features
 
 ### Multi-layered Protection
-- **Command Sandbox**: Secure execution environment
-- **Permission Validation**: Granular access control
+- **Command Sandbox**: Secure execution environment with multiple isolation levels
+- **Permission Validation**: Granular access control for all operations
 - **Risk Assessment**: AI-powered command risk analysis
-- **Audit Trail**: Comprehensive security logging
+- **Audit Trail**: Comprehensive security event logging and monitoring
 
 ### Data Protection
-- **Local Processing**: All AI inference runs on-device
-- **Data Encryption**: Sensitive data encrypted at rest
+- **Local Processing**: All AI inference runs on-device by default
+- **Data Encryption**: Sensitive data encrypted at rest with AES-256
 - **Privacy Controls**: Granular data collection preferences
-- **Secure Communication**: Encrypted API and WebSocket communication
+- **Secure Communication**: HTTPS/TLS for all API communication
+
+### Security Best Practices
+- **CORS Restrictions**: Configurable allowed origins (no wildcards in production)
+- **Input Validation**: Protection against injection attacks and path traversal
+- **Rate Limiting**: Built-in API rate limiting support
+- **File Permissions**: Automatic secure permissions for sensitive files (0o600)
+- **Parameterized Queries**: SQL injection prevention
+- **File Size Limits**: DoS attack prevention (10MB default for content search)
+
+For detailed security information, see [SECURITY.md](SECURITY.md)
 
 ---
 
