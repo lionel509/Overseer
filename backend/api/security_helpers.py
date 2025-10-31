@@ -144,8 +144,6 @@ class InputValidator:
         Returns:
             Sanitized absolute path if valid, None otherwise
         """
-        import os
-        
         # Resolve to absolute paths
         base = os.path.abspath(allowed_base)
         target = os.path.abspath(os.path.join(base, path))

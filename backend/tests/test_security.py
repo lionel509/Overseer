@@ -48,7 +48,9 @@ class TestPathTraversalProtection(unittest.TestCase):
     def test_restricted_directories(self):
         """Test that searches in restricted directories are blocked"""
         # Try to search in /etc (should be blocked for non-root)
-        if os.geteuid() != 0:
+        # Cross-platform: Use getattr for Unix-only functions
+        is_root = getattr(os, 'geteuid', lambda: 1)() == 0
+        if not is_root:
             result = self.tool.search_files("*", base_path="/etc")
             self.assertFalse(result['success'])
             self.assertIn("Access denied", result['error'])

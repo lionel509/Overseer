@@ -20,7 +20,7 @@ def check_python_vulnerabilities() -> List[Dict[str, Any]]:
         
         # Run pip-audit
         result = subprocess.run(
-            [sys.executable, "-m", "pip_audit", "--format", "json"],
+            [sys.executable, "-m", "pip-audit", "--format", "json"],
             capture_output=True,
             text=True,
             check=False

@@ -52,8 +52,10 @@ class FileSearchTool:
             
             # Security: Prevent access to sensitive system directories
             restricted_paths = ['/etc', '/proc', '/sys', '/dev', '/root']
+            # Cross-platform: Use getattr for Unix-only functions
+            is_root = getattr(os, 'geteuid', lambda: 1)() == 0
             for restricted in restricted_paths:
-                if base_path.startswith(restricted) and os.geteuid() != 0:
+                if base_path.startswith(restricted) and not is_root:
                     return {
                         "success": False,
                         "error": f"Access denied: Cannot search in restricted system directory {restricted}"
