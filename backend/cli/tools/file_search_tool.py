@@ -18,6 +18,17 @@ class FileSearchTool:
         self.search_history = []
         self.max_history_size = 50
         
+    def _is_safe_path(self, base_path: str, target_path: str) -> bool:
+        """
+        Check if target_path is within base_path to prevent path traversal attacks
+        """
+        # Resolve both paths to absolute paths
+        base = os.path.abspath(base_path)
+        target = os.path.abspath(target_path)
+        
+        # Ensure target path starts with base path
+        return target.startswith(base)
+    
     def search_files(self, 
                     query: str, 
                     base_path: str = "/",
@@ -36,8 +47,20 @@ class FileSearchTool:
             Dictionary with search results and metadata
         """
         try:
-            # Normalize base path
+            # Normalize and validate base path to prevent path traversal
             base_path = os.path.abspath(base_path)
+            
+            # Security: Prevent access to sensitive system directories
+            restricted_paths = ['/etc', '/proc', '/sys', '/dev', '/root']
+            # Cross-platform: Use getattr for Unix-only functions
+            is_root = getattr(os, 'geteuid', lambda: 1)() == 0
+            for restricted in restricted_paths:
+                if base_path.startswith(restricted) and not is_root:
+                    return {
+                        "success": False,
+                        "error": f"Access denied: Cannot search in restricted system directory {restricted}"
+                    }
+            
             if not os.path.exists(base_path):
                 return {
                     "success": False,
@@ -235,8 +258,13 @@ class FileSearchTool:
         return Path(file_path).suffix.lower() in text_extensions
     
     def _search_in_file_content(self, file_path: str, text: str) -> bool:
-        """Search for text in file content"""
+        """Search for text in file content with security checks"""
         try:
+            # Security: Limit file size to prevent DoS (max 10MB)
+            MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
+            if os.path.getsize(file_path) > MAX_FILE_SIZE:
+                return False
+            
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
                 return text.lower() in content.lower()

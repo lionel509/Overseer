@@ -10,35 +10,11 @@ pathlib2>=2.3.0
 # Type hints support
 typing-extensions>=4.0.0
 
-# JSON handling (built-in, but listed for clarity)
-# json - built into Python
-
-# OS and system utilities (built-in, but listed for clarity)
-# os, sys, glob, time, datetime - built into Python
-
-# File system operations (built-in, but listed for clarity)
-# pathlib - built into Python 3.4+
-
-# Threading and concurrency (built-in, but listed for clarity)
-# threading - built into Python
-
-# Regular expressions (built-in, but listed for clarity)
-# re - built into Python
-
-# Subprocess management (built-in, but listed for clarity)
-# subprocess - built into Python
-
-# Data structures (built-in, but listed for clarity)
-# collections, itertools - built into Python
-
-# Mathematical operations (built-in, but listed for clarity)
-# math, statistics - built into Python
-
 # Overseer API Requirements
 # Dependencies for the REST API server
 
-# FastAPI web framework
-fastapi>=0.104.0
+# FastAPI web framework - Security: Updated to fix ReDoS vulnerability
+fastapi>=0.109.1
 
 # ASGI server for FastAPI
 uvicorn[standard]>=0.24.0
@@ -46,29 +22,11 @@ uvicorn[standard]>=0.24.0
 # Data validation and settings management
 pydantic>=2.4.0
 
-# File upload handling
-python-multipart>=0.0.6
+# File upload handling - Security: Updated to fix DoS and ReDoS vulnerabilities
+python-multipart>=0.0.18
 
 # HTTP client for API testing
 requests>=2.31.0
 
-# CORS middleware (included with FastAPI)
-# fastapi.middleware.cors - included with FastAPI
-
-# JSON handling (built-in, but listed for clarity)
-# json - built into Python
-
-# Async support (built-in, but listed for clarity)
-# asyncio - built into Python
-
-# Type hints (built-in, but listed for clarity)
-# typing - built into Python
-
-# Logging (built-in, but listed for clarity)
-# logging - built into Python
-
-# Path handling (built-in, but listed for clarity)
-# pathlib - built into Python 3.4+
-
 # System monitoring (from CLI requirements)
-psutil>=5.9.0 
+psutil>=5.9.0
